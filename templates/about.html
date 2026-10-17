@@ -53,7 +53,7 @@
                         <ul class="mb-0 ps-3">
                             <li class="mb-2">Automate dataset acquisition without manual download overhead.</li>
                             <li class="mb-2">Build a robust preprocessing engine preserving emotional context in emojis and hashtags.</li>
-                            <li class="mb-2">Train, benchmark, and compare multiple supervised classifiers (Logistic Regression, Naive Bayes, Linear SVM).</li>
+                            <li class="mb-2">Train, benchmark, and compare multiple supervised & deep learning classifiers (Logistic Regression, Naive Bayes, Linear SVM, Multi-Layer Perceptron, and PyTorch Deep Neural Network).</li>
                             <li class="mb-2">Provide local explainability highlighting influential n-gram keywords per prediction.</li>
                             <li>Deliver an intuitive dashboard featuring live text inference, bulk CSV classification, and persistent SQLite tracking.</li>
                         </ul>
@@ -134,6 +134,16 @@ Clean Text ──> [Tokenize & N-Grams] ──> [Compute TF-IDF: tf * log(N / df
                             <h6 class="text-info fw-bold mb-2">4. F1-Score Criterion</h6>
                             <p class="small text-muted mb-1">Harmonic mean balancing Precision and Recall across classes:</p>
                             <code style="color: var(--text-main); font-weight: 600;">F1 = 2 &times; (Precision &times; Recall) / (Precision + Recall)</code>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="p-3 rounded" style="background-color: var(--bg-card-subtle); border: 1px solid var(--border-color);">
+                            <h6 class="text-info fw-bold mb-2">5. Deep Neural Network (PyTorch / Multi-Layer Perceptron)</h6>
+                            <p class="small text-muted mb-1">Learns non-linear representations across hidden layers with Batch Normalization, ReLU activations, and Dropout regularization:</p>
+                            <code style="color: var(--text-main); font-weight: 600;">z<sup>[l]</sup> = W<sup>[l]</sup> a<sup>[l-1]</sup> + b<sup>[l]</sup>, &nbsp; a<sup>[l]</sup> = ReLU(BN(z<sup>[l]</sup>))</code>
+                            <div class="small text-muted mt-2">
+                                Cross-Entropy Loss with AdamW optimization: <code>&Lscr; = -&sum;<sub>c</sub> y<sub>c</sub> log(&sigma;(z)<sub>c</sub>) + &lambda; ||W||<sup>2</sup></code>
+                            </div>
                         </div>
                     </div>
                 </div>

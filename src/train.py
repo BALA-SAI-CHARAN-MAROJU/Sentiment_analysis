@@ -17,6 +17,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
+from sklearn.neural_network import MLPClassifier
 from sklearn.svm import LinearSVC
 
 from config import (
@@ -26,12 +27,14 @@ from config import (
     METRICS_FILE,
     MODEL_FILE,
     NGRAM_RANGE,
+    PYTORCH_MODEL_FILE,
     RANDOM_STATE,
     TEST_SIZE,
     VECTORIZER_FILE,
 )
 from src.data_loader import get_dataset
 from src.evaluate import evaluate_model
+from src.neural_network import PyTorchSentimentClassifier
 from src.utils import logger, save_json
 
 
@@ -84,7 +87,7 @@ def train_and_compare_models(force_reload_data: bool = False):
     logger.info(f"[INFO] TF-IDF Vocabulary size: {len(vectorizer.vocabulary_)} features.")
 
     # 4. Define candidate models
-    # Note: LinearSVC is calibrated with 3-fold CV to provide valid probability distributions
+    # Includes Linear Models, Probabilistic Model, Multi-Layer Perceptron, and PyTorch Deep Neural Network
     models = {
         "Logistic Regression": LogisticRegression(
             C=1.0,
@@ -98,6 +101,22 @@ def train_and_compare_models(force_reload_data: bool = False):
         "Linear SVM": CalibratedClassifierCV(
             LinearSVC(random_state=RANDOM_STATE, max_iter=2000, class_weight="balanced"),
             cv=3,
+        ),
+        "Multi-Layer Perceptron (NN)": MLPClassifier(
+            hidden_layer_sizes=(64,),
+            activation="relu",
+            solver="adam",
+            alpha=1e-4,
+            max_iter=25,
+            random_state=RANDOM_STATE,
+            early_stopping=True,
+        ),
+        "PyTorch Deep Neural Network": PyTorchSentimentClassifier(
+            hidden_dim1=128,
+            hidden_dim2=64,
+            epochs=5,
+            batch_size=64,
+            random_state=RANDOM_STATE,
         ),
     }
 
@@ -140,6 +159,14 @@ def train_and_compare_models(force_reload_data: bool = False):
     joblib.dump(vectorizer, VECTORIZER_FILE)
     logger.info(f"[INFO] Best model saved to: {MODEL_FILE}")
     logger.info(f"[INFO] Vectorizer saved to: {VECTORIZER_FILE}")
+
+    # Save dedicated PyTorch checkpoint
+    if "PyTorch Deep Neural Network" in models:
+        try:
+            models["PyTorch Deep Neural Network"].save_checkpoint(PYTORCH_MODEL_FILE)
+            logger.info(f"[INFO] PyTorch model checkpoint saved to: {PYTORCH_MODEL_FILE}")
+        except Exception as e:
+            logger.warning(f"Could not save PyTorch checkpoint: {e}")
 
     # Save metadata
     metadata = {

@@ -33,6 +33,7 @@ PROCESSED_DATA_FILE = PROCESSED_DATA_DIR / "sentiment_dataset.csv"
 SAMPLE_LIVE_POSTS_FILE = DATA_DIR / "sample_live_posts.json"
 
 MODEL_FILE = MODELS_DIR / "sentiment_model.pkl"
+PYTORCH_MODEL_FILE = MODELS_DIR / "sentiment_nn_pytorch.pt"
 VECTORIZER_FILE = MODELS_DIR / "vectorizer.pkl"
 METADATA_FILE = MODELS_DIR / "metadata.json"
 METRICS_FILE = MODELS_DIR / "model_metrics.json"

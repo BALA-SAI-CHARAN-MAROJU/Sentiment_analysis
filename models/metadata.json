@@ -14,7 +14,7 @@
     "total_samples": 9999,
     "train_samples": 7999,
     "test_samples": 2000,
-    "trained_at": "2026-10-05 19:40:47",
+    "trained_at": "2026-10-17 23:56:00",
     "best_metrics": {
         "accuracy": 0.6115,
         "precision_macro": 0.6088,

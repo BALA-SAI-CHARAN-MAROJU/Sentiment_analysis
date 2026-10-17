@@ -2,16 +2,17 @@
 
 [![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.12%20%7C%203.14-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/Flask-3.x-000000?logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.x-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/)
 [![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-1.4+-F7931E?logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
-[![Tests](https://img.shields.io/badge/Tests-25%20Passed-2ea44f?logo=pytest&logoColor=white)](#9-automated-testing--quality-assurance)
-[![Architecture](https://img.shields.io/badge/Architecture-Modular%20MVC-blueviolet)](#3-system-architecture--data-flow-diagrams)
+[![Tests](https://img.shields.io/badge/Tests-30%20Passed-2ea44f?logo=pytest&logoColor=white)](#10-automated-testing--quality-assurance)
+[![Architecture](https://img.shields.io/badge/Architecture-Modular%20MVC%20%2B%20PyTorch-blueviolet)](#3-system-architecture--data-flow-diagrams)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-An end-to-end Machine Learning, Natural Language Processing, and Web Intelligence system engineered to ingest, clean, classify, explain, and visualize the sentiment polarity of user-generated social media posts across three canonical categories:
+An end-to-end Machine Learning, Deep Learning, Natural Language Processing, and Web Intelligence system engineered to ingest, clean, classify, explain, and visualize the sentiment polarity of user-generated social media posts across three canonical categories:
 
 $$\text{Class} \in \{\textbf{Positive}, \textbf{Neutral}, \textbf{Negative}\}$$
 
-Built as an academic and production-ready portfolio project featuring a social-aware NLP preprocessing pipeline, multi-model benchmark tournament, Platt-calibrated probability scoring, local token explainability, live social stream ingestion (Reddit, Mastodon, YouTube), bulk CSV batch processing, persistent SQLite analytics, and an interactive dark-themed web dashboard.
+Built as an academic and production-ready Neural Networks & Deep Learning (NNDL) capstone project featuring a social-aware NLP preprocessing pipeline, multi-model benchmark tournament (**Linear SVM**, **Logistic Regression**, **Naive Bayes**, **Multi-Layer Perceptron (NN)**, and **PyTorch Deep Neural Network**), Platt-calibrated probability scoring, local token explainability, live social stream ingestion (Reddit, Mastodon, YouTube), bulk CSV batch processing, persistent SQLite analytics, and an interactive dark-themed web dashboard.
 
 ---
 
@@ -41,7 +42,7 @@ Social media content is notoriously noisy, dense with slang, acronyms, emojis, h
 **Sentify** resolves these challenges through a targeted social NLP pipeline combined with a multi-model benchmarking suite:
 - **Zero-Friction Startup**: Automatically downloads and prepares the `cardiffnlp/tweet_eval` social sentiment benchmark corpus or falls back to an offline social dataset if an internet connection is unavailable.
 - **Social-Aware Token Engineering**: Emojis are translated to emotive lexemes (`😍` $\rightarrow$ `love heart eyes`, `😡` $\rightarrow$ `angry`), negations are preserved, and handles/URLs are normalized.
-- **Calibrated Multi-Model Classification**: Evaluates Logistic Regression, Multinomial Naive Bayes, and Linear Support Vector Machines (LinearSVC) equipped with Platt scaling to yield calibrated posterior probabilities.
+- **Deep Learning & Statistical Tournament**: Evaluates **Linear Support Vector Machines (LinearSVC)** with Platt calibration, **Logistic Regression**, **Multinomial Naive Bayes**, **Multi-Layer Perceptrons (MLP)**, and **PyTorch Deep Neural Networks** (`SentimentNeuralNetwork` with Batch Normalization and Dropout).
 - **Explainable AI (XAI)**: Surfaces the highest-weighted n-grams driving each prediction to give users transparent, interpretable decisions.
 
 ---
@@ -51,7 +52,8 @@ Social media content is notoriously noisy, dense with slang, acronyms, emojis, h
 | Feature | Description |
 | :--- | :--- |
 | **Social NLP Preprocessing** | Cleans URLs, HTML entities, and user mentions (`@user`), expands emotional emojis, compresses elongated characters (`sooo good` $\rightarrow$ `soo good`), and preserves grammatical negations (`not`, `never`, `cannot`). |
-| **Automated Model Tournament** | Trains and cross-evaluates **Linear SVM**, **Logistic Regression**, and **Multinomial Naive Bayes** on identical TF-IDF feature matrices, saving the top-performing model ranked by **Weighted F1-Score**. |
+| **Deep Learning & ML Tournament** | Trains and cross-evaluates **Linear SVM**, **Logistic Regression**, **Multinomial Naive Bayes**, **Multi-Layer Perceptron (NN)**, and **PyTorch Deep Neural Network** on identical TF-IDF feature matrices, saving the top-performing model ranked by **Weighted F1-Score**. |
+| **PyTorch Neural Network Engine** | Deep feedforward neural network (`src/neural_network.py`) featuring fully connected linear layers, Batch Normalization (`BatchNorm1d`), ReLU activations, Dropout regularization (0.3), AdamW optimization, and Scikit-Learn wrapper compatibility. |
 | **Platt Probability Calibration** | Wraps linear maximum-margin classifiers with `CalibratedClassifierCV` (sigmoid scaling) to provide true confidence scores rather than uncalibrated margin distances. |
 | **Local Token Explainability** | Ranks and displays the exact tokens and n-grams that steered the prediction toward Positive, Negative, or Neutral polarity. |
 | **Live Social Media Stream** | Ingests real-time public posts from Reddit, Mastodon, and YouTube with sentiment tags, confidence meters, and original post URLs. |
@@ -97,14 +99,17 @@ Social media content is notoriously noisy, dense with slang, acronyms, emojis, h
              │ Cleaned Text
              ▼
  ┌───────────────────────┐
- │ 2.0 TF-IDF Vectorizer │  --> Sublinear TF, 1-2 N-Grams, Max 15,000 features
+ │ 2.0 TF-IDF Vectorizer │  --> Sublinear TF, 1-2 N-Grams, Max 6,000 features
  └───────────┬───────────┘
              │ Sparse Feature Matrix
              ▼
- ┌───────────────────────┐
- │ 3.0 Model Inference   │  --> Linear SVM + Platt Scaling (CalibratedClassifierCV)
- └───────────┬───────────┘
-             │ Posterior Probabilities & Decision Values
+ ┌─────────────────────────────────────────────────────────────┐
+ │ 3.0 Model Tournament (ML & PyTorch Neural Networks)         │
+ │   - Linear SVM (Calibrated)   - Multi-Layer Perceptron (NN) │
+ │   - Logistic Regression       - PyTorch Deep Neural Network │
+ │   - Multinomial Naive Bayes                                 │
+ └───────────┬─────────────────────────────────────────────────┘
+             │ Posterior Probabilities & Softmax Output
              ▼
  ┌───────────────────────┐
  │ 4.0 XAI Explainability│  --> Extracts top positive/negative/neutral token weights
@@ -114,7 +119,7 @@ Social media content is notoriously noisy, dense with slang, acronyms, emojis, h
      ▼                                ▼
 ┌───────────────────────┐ ┌───────────────────────┐
 │ 5.0 SQLite Store      │ │ 6.0 Web Dashboard &   │
-│     (database.db)     │ │     REST API JSON     │
+│     (sentiment.db)    │ │     REST API JSON     │
 └───────────────────────┘ └───────────────────────┘
 ```
 
@@ -124,11 +129,11 @@ Social media content is notoriously noisy, dense with slang, acronyms, emojis, h
 Clean Tokens ──► [N-Gram Matrix: (1, 2)] ──► [TF-IDF Feature Alignment]
                                                     │
                                                     ▼
-                                      [Linear SVM Decision Function]
+                             [Classifier / Neural Network Decision Function]
                                                     │
                    ┌────────────────────────────────┴──────────────────────────────┐
                    ▼                                                               ▼
-        [Sigmoid Platt Calibration]                                  [Feature Weight Multiplication]
+        [Sigmoid / Softmax Probabilities]                            [Feature Weight Multiplication]
                    │                                                               │
                    ▼                                                               ▼
        [P(Neg), P(Neu), P(Pos)]                                    [Top Ranked Explanatory Tokens]
@@ -164,10 +169,11 @@ c:/NNDL project/
 │   └── sample_live_posts.json        # Curated mock live stream for offline demonstrations
 │
 ├── models/
-│   ├── sentiment_model.pkl     # Pre-trained production classifier (Linear SVM Calibrated)
+│   ├── sentiment_model.pkl     # Best trained classifier (Linear SVM Calibrated)
+│   ├── sentiment_nn_pytorch.pt # PyTorch Deep Neural Network serialized checkpoint
 │   ├── vectorizer.pkl          # Trained TF-IDF feature extractor
 │   ├── metadata.json           # Model configuration, vocabulary size, and metrics
-│   ├── model_metrics.json      # Comparative benchmark results across all 3 models
+│   ├── model_metrics.json      # Comparative benchmark results across all 5 models
 │   └── .gitkeep
 │
 ├── database/
@@ -178,6 +184,7 @@ c:/NNDL project/
 │   ├── __init__.py             # Module initializer
 │   ├── data_loader.py          # Automatic dataset fetcher, fallback builder, and validator
 │   ├── preprocessing.py        # Social NLP cleaner (emojis, mentions, URLs, negations)
+│   ├── neural_network.py       # PyTorch SentimentNeuralNetwork, dataset, and estimator wrapper
 │   ├── train.py                # Multi-model benchmarking tournament & model selection
 │   ├── evaluate.py             # Accuracy, precision, recall, F1, and confusion matrix engine
 │   ├── predict.py              # Single and batch inference with token explainability
@@ -211,6 +218,7 @@ c:/NNDL project/
 │
 └── tests/
     ├── __init__.py
+    ├── test_neural_network.py  # Unit tests for PyTorch SentimentNN & Scikit-Learn MLP
     ├── test_preprocessing.py   # Unit tests for text cleaning and emoji handling
     ├── test_prediction.py      # Unit tests for model inference and probabilities
     └── test_routes.py          # Integration tests for Flask web routes and REST APIs
@@ -249,9 +257,26 @@ Because raw SVM margin distances $f(x) = w^T x + b$ do not represent probabiliti
 
 $$P(y = 1 \mid f(x)) = \frac{1}{1 + \exp(A \cdot f(x) + B)}$$
 
-The parameters $A$ and $B$ are estimated via maximum likelihood on internal validation folds.
+### 4. Deep Feedforward Neural Network (PyTorch / Multi-Layer Perceptron)
+The PyTorch `SentimentNeuralNetwork` and `MLPClassifier` process the high-dimensional sparse TF-IDF vectors through successive non-linear hidden representations:
 
-### 4. Evaluation Metrics
+$$\mathbf{z}^{[l]} = \mathbf{W}^{[l]} \mathbf{a}^{[l-1]} + \mathbf{b}^{[l]}$$
+
+$$\hat{\mathbf{z}}^{[l]} = \frac{\mathbf{z}^{[l]} - \mu_B}{\sqrt{\sigma_B^2 + \epsilon}} \cdot \gamma + \beta \quad (\text{Batch Normalization})$$
+
+$$\mathbf{a}^{[l]} = \max\left(0, \hat{\mathbf{z}}^{[l]}\right) \quad (\text{Rectified Linear Unit Activation})$$
+
+$$\mathbf{r} \sim \text{Bernoulli}(1 - p), \quad \tilde{\mathbf{a}}^{[l]} = \mathbf{r} \odot \mathbf{a}^{[l]} \quad (\text{Dropout Regularization})$$
+
+Output Softmax posterior probabilities over classes $c \in \{0, 1, 2\}$:
+
+$$P(y = c \mid \mathbf{x}) = \frac{\exp\left(z_c^{[\text{out}]}\right)}{\sum_{k=1}^{3} \exp\left(z_k^{[\text{out}]}\right)}$$
+
+Trained using **Categorical Cross-Entropy Loss** with class weighting and AdamW weight decay:
+
+$$\mathcal{L} = -\sum_{c=1}^{3} w_c \, y_c \log\left(\hat{y}_c\right) + \frac{\lambda}{2} \|\mathbf{W}\|_2^2$$
+
+### 5. Evaluation Metrics
 For multi-class sentiment classification, metrics are weighted by class support:
 
 $$\text{Accuracy} = \frac{\sum_{c} \text{TP}_c}{N}$$
@@ -266,15 +291,17 @@ $$\text{Weighted F1} = \sum_{c} \left( \frac{N_c}{N} \times \text{F1-Score}_c \r
 
 ## 6. Model Benchmark & Performance Comparison
 
-The benchmark tournament was evaluated using an 80/20 train-test split on the standardized social dataset with 15,000 maximum n-gram features:
+The benchmark tournament was evaluated using an 80/20 train-test split on the standardized social dataset with 6,000 maximum n-gram features across all 5 candidate architectures:
 
 | Model Architecture | Accuracy | Precision (Weighted) | Recall (Weighted) | F1-Score (Weighted) | Selection Status |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Linear SVM (Calibrated)** | **61.15%** | **60.87%** | **61.15%** | **60.96%** | **Selected Production Model** |
 | Logistic Regression | 60.75% | 60.70% | 60.75% | 60.72% | Evaluated |
 | Multinomial Naive Bayes | 60.60% | 60.25% | 60.60% | 60.25% | Evaluated |
+| Multi-Layer Perceptron (NN) | 59.35% | 59.24% | 59.35% | 59.27% | Evaluated |
+| PyTorch Deep Neural Network | 57.90% | 58.33% | 57.90% | 58.06% | Evaluated & Saved (`.pt`) |
 
-> **Academic Insight**: On a noisy, three-class social media corpus (Twitter / X data with balanced neutral classes), ~61% balanced accuracy without multi-gigabyte deep neural networks represents strong statistical performance. Linear SVM with Platt calibration minimizes structural risk while producing calibrated posterior probabilities.
+> **Academic Insight**: On a noisy, three-class social media corpus (Twitter / X data with balanced neutral classes), ~61% balanced accuracy without multi-gigabyte deep neural networks represents strong statistical performance. Linear SVM with Platt calibration minimizes structural risk while producing calibrated posterior probabilities. The neural network models capture non-linear feature interactions, providing an ideal comparative study for Neural Networks & Deep Learning courses.
 
 ---
 
@@ -372,7 +399,7 @@ The web application is structured into seven purpose-built views:
    - High-frequency n-gram tables.
    - High-resolution word clouds for Positive, Negative, and Neutral classes.
 5. **Model Performance (`/performance`)**:
-   - Multi-model comparison matrix (Accuracy, Precision, Recall, F1).
+   - Multi-model comparison matrix across all 5 architectures (Accuracy, Precision, Recall, F1).
    - Interactive Confusion Matrix heatmap.
    - Per-class performance metrics.
 6. **Live Social Media Stream (`/live-feed`)**:
@@ -380,7 +407,7 @@ The web application is structured into seven purpose-built views:
    - Filter by platform source and sentiment classification.
 7. **Academic Presentation & Viva Notes (`/about`)**:
    - Interactive Level 0-2 Data Flow Diagrams.
-   - Mathematical equations with interactive explainers.
+   - Mathematical equations for linear, probabilistic, and deep neural network models.
    - Comprehensive viva voce preparation sheet.
 
 ---
@@ -497,26 +524,32 @@ curl -X POST http://127.0.0.1:5000/api/predict \
 
 ## 10. Automated Testing & Quality Assurance
 
-The repository includes a comprehensive automated test suite with **25 unit and integration tests** built using `pytest`:
+The repository includes a comprehensive automated test suite with **30 unit and integration tests** built using `pytest`:
 
 ```bash
 python -m pytest tests/ -v
 ```
 
 ### Test Suite Structure:
-- **`tests/test_preprocessing.py`**:
+- **`tests/test_neural_network.py` (5 tests)**:
+  - PyTorch `SentimentNeuralNetwork` forward pass, batchnorm, and output shapes.
+  - `SparseTextDataset` sparse-to-dense batch tensor streaming.
+  - `PyTorchSentimentClassifier` Scikit-Learn wrapper `fit`, `predict`, and `predict_proba`.
+  - PyTorch model checkpoint serialization and restoration (`.pt` file).
+  - Scikit-Learn `MLPClassifier` multi-class convergence and probability output.
+- **`tests/test_preprocessing.py` (5 tests)**:
   - Emoji expansion into sentiment-carrying keywords.
   - User mention (`@username`) and URL stripping.
   - HTML entity decoding (`&amp;` $\rightarrow$ `&`).
   - Negation word retention (`not`, `never`, `cannot`).
   - Normalization of elongated words (`sooo` $\rightarrow$ `soo`).
-- **`tests/test_prediction.py`**:
+- **`tests/test_prediction.py` (6 tests)**:
   - Model and vectorizer artifact loading verification.
   - Sentiment classification output validity.
   - Probability bounds verification ($0.0 \le P \le 1.0$ and $\sum P = 1.0$).
   - Explainability token extraction and score sorting.
   - Batch inference output length alignment.
-- **`tests/test_routes.py`**:
+- **`tests/test_routes.py` (14 tests)**:
   - HTTP 200 OK verification on all web views (`/`, `/analyze`, `/bulk`, `/analytics`, `/performance`, `/live-feed`, `/about`).
   - REST endpoint contracts (`/api/predict`, `/api/bulk-predict`, `/api/stats`, `/api/fetch-live`, `/api/history`).
   - CSV file upload, automated column detection, and error handling for empty files.
@@ -565,8 +598,8 @@ MASTODON_ACCESS_TOKEN=
 ### Q1: Why is sentiment analysis on social media harder than on long-form reviews (e.g., IMDb)?
 **Answer**: Social media posts (tweets, Reddit comments) are short, informal, and context-sparse. They rely heavily on abbreviations, emojis, sarcasm, hashtags, and spelling variations. Review datasets typically consist of structured, multi-paragraph text with rich syntactic clues. Social NLP requires specialized preprocessing to preserve emotive tokens and handle negations without discarding context.
 
-### Q2: Why choose Linear SVM over deep neural networks or Naive Bayes?
-**Answer**: In text classification with TF-IDF, the feature space is very high-dimensional (15,000+ n-grams) and sparse. In high-dimensional space, text data is predominantly linearly separable. Linear SVM finds the maximum-margin hyperplane, which minimizes structural risk rather than empirical training error. While Naive Bayes assumes conditional feature independence (which fails with phrases like "not good"), Linear SVM models feature interactions effectively without requiring GPUs or gigabytes of memory.
+### Q2: Why compare Linear SVM with Deep Neural Networks?
+**Answer**: In high-dimensional sparse TF-IDF spaces (thousands of features), text vectors are largely linearly separable. Linear SVM finds the maximum-margin hyperplane, minimizing structural risk with minimal computational overhead. Deep Neural Networks (MLP and PyTorch) model non-linear hierarchical representations and cross-feature interactions using ReLU activations, Batch Normalization, and Dropout. Comparing both paradigms illustrates the trade-off between margin-based convex optimization and gradient-based deep representation learning.
 
 ### Q3: Why is probability calibration (Platt Scaling) necessary for SVMs?
 **Answer**: Standard SVMs output uncalibrated geometric margins $f(x) \in (-\infty, +\infty)$ representing the distance to the separating hyperplane, not posterior probabilities. Using Platt scaling (`CalibratedClassifierCV`), a logistic sigmoid is fitted to decision function values using out-of-fold cross-validation. This converts raw margins into true calibrated probabilities $P(y \mid x) \in [0, 1]$ required for confidence meters and threshold-based decision making.
@@ -588,7 +621,7 @@ MASTODON_ACCESS_TOKEN=
   ```
 
 ### Issue: Re-training models from scratch
-- **Solution**: To re-run the multi-model tournament and regenerate benchmark metrics:
+- **Solution**: To re-run the multi-model tournament (including neural networks) and regenerate benchmark metrics:
   ```powershell
   python -m src.train
   ```

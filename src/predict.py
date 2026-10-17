@@ -20,6 +20,7 @@ from config import (
 )
 from src.preprocessing import clean_text
 from src.utils import load_json, logger
+from src.neural_network import PyTorchSentimentClassifier  # Supports unpickling PyTorch models
 
 # Module-level cache for loaded model and vectorizer
 _MODEL = None
