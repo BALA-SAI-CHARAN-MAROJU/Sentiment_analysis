@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}Dataset Analytics | Sentiment Analysis{% endblock %}
+
+{% block content %}
+<!-- Top Metrics Row -->
+<div class="row g-3 mb-4">
+    <div class="col-12 col-md-3">
+        <div class="card-custom kpi-card">
+            <div class="kpi-title"><i class="fa-solid fa-layer-group me-1 text-primary"></i> Total Corpus Posts</div>
+            <div class="kpi-value">{{ analytics.total_posts }}</div>
+            <div class="kpi-subtitle">Preprocessed training samples</div>
+        </div>
+    </div>
+    <div class="col-12 col-md-3">
+        <div class="card-custom kpi-card">
+            <div class="kpi-title"><i class="fa-solid fa-text-width me-1 text-success"></i> Average Post Length</div>
+            <div class="kpi-value">{{ analytics.length_stats.avg_chars }} <span class="fs-6 fw-normal text-muted">chars</span></div>
+            <div class="kpi-subtitle">~{{ analytics.length_stats.avg_words }} words per post</div>
+        </div>
+    </div>
+    <div class="col-12 col-md-3">
+        <div class="card-custom kpi-card">
+            <div class="kpi-title"><i class="fa-solid fa-hashtag me-1 text-warning"></i> Unique Hashtags</div>
+            <div class="kpi-value">{{ analytics.top_hashtags|length }}</div>
+            <div class="kpi-subtitle">Top tracked trending tags</div>
+        </div>
+    </div>
+    <div class="col-12 col-md-3">
+        <div class="card-custom kpi-card">
+            <div class="kpi-title"><i class="fa-solid fa-scale-balanced me-1 text-info"></i> Class Balance</div>
+            <div class="kpi-value">1 : 1 : 1</div>
+            <div class="kpi-subtitle">Balanced 3-class distribution</div>
+        </div>
+    </div>
+</div>
+
+<!-- Word Clouds Row -->
+<div class="card-custom mb-4">
+    <div class="card-header-custom">
+        <i class="fa-solid fa-cloud me-2 text-info"></i>Generated Sentiment Word Clouds
+    </div>
+    <div class="card-body p-4">
+        <div class="row g-4">
+            <div class="col-12 col-md-4 text-center">
+                <h6 class="text-success fw-bold mb-2"><i class="fa-solid fa-face-smile me-1"></i> Positive Word Cloud</h6>
+                <div class="p-2 rounded" style="background-color: var(--bg-card-subtle); border: 1px solid var(--border-color);">
+                    <img src="{{ url_for('static', filename='images/wordcloud_positive.png') }}" class="img-fluid rounded" alt="Positive Word Cloud" onerror="this.src='https://placehold.co/600x320/121212/00ff88?text=Positive+Words';">
+                </div>
+            </div>
+            <div class="col-12 col-md-4 text-center">
+                <h6 class="text-danger fw-bold mb-2"><i class="fa-solid fa-face-frown me-1"></i> Negative Word Cloud</h6>
+                <div class="p-2 rounded" style="background-color: var(--bg-card-subtle); border: 1px solid var(--border-color);">
+                    <img src="{{ url_for('static', filename='images/wordcloud_negative.png') }}" class="img-fluid rounded" alt="Negative Word Cloud" onerror="this.src='https://placehold.co/600x320/121212/ff4444?text=Negative+Words';">
+                </div>
+            </div>
+            <div class="col-12 col-md-4 text-center">
+                <h6 class="text-info fw-bold mb-2"><i class="fa-solid fa-face-meh me-1"></i> Neutral Word Cloud</h6>
+                <div class="p-2 rounded" style="background-color: var(--bg-card-subtle); border: 1px solid var(--border-color);">
+                    <img src="{{ url_for('static', filename='images/wordcloud_neutral.png') }}" class="img-fluid rounded" alt="Neutral Word Cloud" onerror="this.src='https://placehold.co/600x320/121212/888888?text=Neutral+Words';">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Vocabulary & Hashtag Analysis -->
+<div class="row g-4 mb-4">
+    <!-- Top Hashtags -->
+    <div class="col-12 col-lg-5">
+        <div class="card-custom h-100">
+            <div class="card-header-custom">
+                <i class="fa-solid fa-hashtag me-2 text-warning"></i>Most Common Hashtags
+            </div>
+            <div class="card-body p-4">
+                <div class="d-flex flex-wrap gap-2">
+                    {% for h in analytics.top_hashtags %}
+                    <span class="badge bg-dark border border-secondary p-2 fs-6" style="color: var(--text-main);">
+                        <span class="text-warning fw-semibold">{{ h.tag }}</span>
+                        <span class="badge ms-1" style="background-color: var(--bg-hover); color: var(--text-main);">{{ h.count }}</span>
+                    </span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Words Frequency Table -->
+    <div class="col-12 col-lg-7">
+        <div class="card-custom h-100">
+            <div class="card-header-custom">
+                <i class="fa-solid fa-arrow-down-wide-short me-2 text-info"></i>High Frequency Vocabulary Tokens
+            </div>
+            <div class="card-body p-0 table-responsive">
+                <table class="table table-custom">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Word Token</th>
+                            <th>Frequency Count</th>
+                            <th>Relative Density</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for w in analytics.top_words_overall[:8] %}
+                        <tr>
+                            <td class="text-muted">{{ loop.index }}</td>
+                            <td class="fw-semibold" style="color: var(--text-main);">{{ w.word }}</td>
+                            <td><span class="badge bg-dark border border-secondary">{{ w.count }}</span></td>
+                            <td>
+                                <div class="progress" style="height: 6px; background-color: var(--bg-hover);">
+                                    <div class="progress-bar bg-info" style="width: {{ (w.count / analytics.top_words_overall[0].count * 100)|round }}%;"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

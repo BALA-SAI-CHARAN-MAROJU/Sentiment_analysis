@@ -1,0 +1,403 @@
+{% extends "base.html" %}
+
+{% block title %}Live Social Feed | Sentiment Analysis{% endblock %}
+
+{% block content %}
+<!-- Top Header & Controls Card -->
+<div class="card-custom mb-4">
+    <div class="card-header-custom">
+        <i class="fa-solid fa-satellite-dish me-2 text-info"></i>Real-Time Social Media Data Collection
+    </div>
+    <div class="card-body p-4">
+        <form id="liveFeedForm">
+            <div class="row g-3 align-items-end">
+
+                <!-- Source Selector -->
+                <div class="col-12 col-md-4">
+                    <label for="feedSourceSelect" class="form-label fw-semibold">Select Data Source:</label>
+                    <select class="form-select form-control-custom" id="feedSourceSelect" name="source">
+                        <option value="all" selected>All Sources (Aggregated Live Stream)</option>
+                        <option value="hackernews">Hacker News (Real-time Tech Discussions)</option>
+                        <option value="mastodon">Mastodon (Decentralized Social Timelines)</option>
+                        <option value="github">GitHub (Open Source Community Comments)</option>
+                        <option value="bluesky">Bluesky (Public Microblog Posts)</option>
+                        <option value="reddit">Reddit (r/technology, r/gaming)</option>
+                    </select>
+                </div>
+
+                <!-- Topic / Keyword Input -->
+                <div class="col-12 col-md-3">
+                    <label for="queryInput" class="form-label fw-semibold">Search Topic / Keyword:</label>
+                    <input type="text" class="form-control form-control-custom" id="queryInput" name="query" value="technology" placeholder="e.g. AI, phone, update, python">
+                    <div class="d-flex gap-1 mt-1 flex-wrap">
+                        <span class="badge bg-secondary bg-opacity-25 border border-secondary text-dim small sub-chip" style="cursor: pointer;" data-topic="technology">technology</span>
+                        <span class="badge bg-secondary bg-opacity-25 border border-secondary text-dim small sub-chip" style="cursor: pointer;" data-topic="AI">AI</span>
+                        <span class="badge bg-secondary bg-opacity-25 border border-secondary text-dim small sub-chip" style="cursor: pointer;" data-topic="python">python</span>
+                        <span class="badge bg-secondary bg-opacity-25 border border-secondary text-dim small sub-chip" style="cursor: pointer;" data-topic="gaming">gaming</span>
+                    </div>
+                </div>
+
+                <!-- Post Count -->
+                <div class="col-6 col-md-2">
+                    <label for="feedLimitSelect" class="form-label fw-semibold">Post Count:</label>
+                    <select class="form-select form-control-custom" id="feedLimitSelect" name="limit">
+                        <option value="5">5 posts</option>
+                        <option value="10" selected>10 posts</option>
+                        <option value="15">15 posts</option>
+                        <option value="20">20 posts</option>
+                    </select>
+                </div>
+
+                <!-- Action Button -->
+                <div class="col-12 col-md-3">
+                    <button type="submit" id="fetchLiveBtn" class="btn btn-primary-custom w-100 d-flex justify-content-center align-items-center gap-2">
+                        <span id="fetchSpinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+                        <i class="fa-solid fa-cloud-arrow-down"></i> Fetch & Analyze
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Metrics & Charts Section -->
+<div id="liveAnalyticsContainer" class="d-none">
+    <!-- KPI Counters Row -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="card-custom kpi-card">
+                <div class="kpi-title"><i class="fa-solid fa-inbox me-1 text-primary"></i> Posts Fetched</div>
+                <div class="kpi-value" id="kpiTotalFetched">0</div>
+                <div class="kpi-subtitle">Collected in real time</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card-custom kpi-card">
+                <div class="kpi-title"><i class="fa-solid fa-face-smile me-1 text-success"></i> Positive</div>
+                <div class="kpi-value text-success" id="kpiPositive">0 <span class="fs-6 fw-normal text-muted" id="kpiPosPct">(0%)</span></div>
+                <div class="kpi-subtitle">Favorable opinions</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card-custom kpi-card">
+                <div class="kpi-title"><i class="fa-solid fa-face-frown me-1 text-danger"></i> Negative</div>
+                <div class="kpi-value text-danger" id="kpiNegative">0 <span class="fs-6 fw-normal text-muted" id="kpiNegPct">(0%)</span></div>
+                <div class="kpi-subtitle">Criticism & complaints</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card-custom kpi-card">
+                <div class="kpi-title"><i class="fa-solid fa-face-meh me-1 text-info"></i> Neutral</div>
+                <div class="kpi-value text-info" id="kpiNeutral">0 <span class="fs-6 fw-normal text-muted" id="kpiNeuPct">(0%)</span></div>
+                <div class="kpi-subtitle">Objective observations</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row g-4 mb-4">
+        <!-- Live Donut Chart -->
+        <div class="col-12 col-lg-5">
+            <div class="card-custom h-100">
+                <div class="card-header-custom">
+                    <i class="fa-solid fa-chart-pie me-2 text-info"></i>Live Sentiment Distribution
+                </div>
+                <div class="card-body p-4 d-flex justify-content-center align-items-center">
+                    <div style="max-width: 280px; width: 100%; height: 260px; position: relative;">
+                        <canvas id="liveDonutChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Source Breakdown Bar Chart -->
+        <div class="col-12 col-lg-7">
+            <div class="card-custom h-100">
+                <div class="card-header-custom">
+                    <i class="fa-solid fa-chart-column me-2 text-info"></i>Sentiment Distribution by Platform
+                </div>
+                <div class="card-body p-4 d-flex justify-content-center align-items-center">
+                    <div style="width: 100%; height: 260px;">
+                        <canvas id="liveSourceBarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Results Table Card -->
+<div class="card-custom mb-4">
+    <div class="card-header-custom d-flex justify-content-between align-items-center">
+        <span><i class="fa-solid fa-stream me-2 text-info"></i>Live Posts Feed</span>
+        <span class="badge bg-dark border border-secondary text-muted" id="feedStatusBadge">Ready</span>
+    </div>
+    <div class="card-body p-0 table-responsive">
+        <table class="table table-custom">
+            <thead>
+                <tr>
+                    <th style="width: 50px;">#</th>
+                    <th>Post Content</th>
+                    <th style="width: 160px;">Platform</th>
+                    <th style="width: 120px;">Sentiment</th>
+                    <th style="width: 100px;">Confidence</th>
+                    <th style="width: 150px;">Timestamp</th>
+                    <th style="width: 70px;">Link</th>
+                </tr>
+            </thead>
+            <tbody id="livePostsTableBody">
+                {% if initial_posts %}
+                    {% for p in initial_posts %}
+                    <tr>
+                        <td class="text-muted">{{ loop.index }}</td>
+                        <td>
+                            <div class="fw-medium" style="max-width: 480px;">{{ p.text }}</div>
+                        </td>
+                        <td>
+                            <span class="badge bg-dark border border-secondary text-info">{{ p.source }}</span>
+                        </td>
+                        <td>
+                            {% if p.sentiment.lower() == 'positive' %}
+                                <span class="badge badge-pos px-2 py-1">Positive</span>
+                            {% elif p.sentiment.lower() == 'negative' %}
+                                <span class="badge badge-neg px-2 py-1">Negative</span>
+                            {% else %}
+                                <span class="badge badge-neu px-2 py-1">Neutral</span>
+                            {% endif %}
+                        </td>
+                        <td class="fw-semibold">{{ (p.confidence * 100)|round(1) }}%</td>
+                        <td class="text-muted small">{{ p.timestamp }}</td>
+                        <td>
+                            {% if p.url %}
+                                <a href="{{ p.url }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary py-0 px-2" title="View Source">
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                </a>
+                            {% else %}
+                                <span class="text-dim">-</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center py-5 text-muted">
+                            <i class="fa-solid fa-satellite fa-3x mb-3 text-secondary"></i>
+                            <p>No live posts loaded yet.<br>Click "Fetch & Analyze" above to start live collection.</p>
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let liveDonutChart = null;
+    let liveSourceBarChart = null;
+
+    document.addEventListener("DOMContentLoaded", function () {
+        initTopicChips();
+        initLiveFeedForm();
+    });
+
+    function initTopicChips() {
+        const chips = document.querySelectorAll(".sub-chip");
+        const queryInput = document.getElementById("queryInput");
+        chips.forEach(chip => {
+            chip.addEventListener("click", function() {
+                if (queryInput) {
+                    queryInput.value = this.getAttribute("data-topic");
+                    // Auto-trigger fetch on chip click
+                    const form = document.getElementById("liveFeedForm");
+                    if (form) form.dispatchEvent(new Event("submit"));
+                }
+            });
+        });
+    }
+
+    function initLiveFeedForm() {
+        const form = document.getElementById("liveFeedForm");
+        const btn = document.getElementById("fetchLiveBtn");
+        const spinner = document.getElementById("fetchSpinner");
+        const statusBadge = document.getElementById("feedStatusBadge");
+
+        if (!form) return;
+
+        form.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const source = document.getElementById("feedSourceSelect").value;
+            const query = document.getElementById("queryInput").value.trim() || "technology";
+            const limit = document.getElementById("feedLimitSelect").value;
+
+            if (btn) btn.disabled = true;
+            if (spinner) spinner.classList.remove("d-none");
+            if (statusBadge) statusBadge.innerText = "Fetching & Analyzing...";
+
+            try {
+                const url = new URL("/api/fetch-live", window.location.origin);
+                url.searchParams.append("source", source);
+                url.searchParams.append("limit", limit);
+                url.searchParams.append("query", query);
+                url.searchParams.append("subreddit", query);
+
+                const response = await fetch(url.toString(), { method: "GET" });
+                if (!response.ok) {
+                    throw new Error(`Server returned HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+                renderLiveFeedResults(data);
+            } catch (err) {
+                console.error("Live feed fetch error:", err);
+                alert("Error fetching live posts: " + err.message);
+                if (statusBadge) statusBadge.innerText = "Error";
+            } finally {
+                if (btn) btn.disabled = false;
+                if (spinner) spinner.classList.add("d-none");
+            }
+        });
+    }
+
+    function renderLiveFeedResults(data) {
+        const posts = data.posts || [];
+        const summary = data.summary || { positive: 0, negative: 0, neutral: 0 };
+        const total = posts.length;
+
+        const container = document.getElementById("liveAnalyticsContainer");
+        if (container) container.classList.remove("d-none");
+
+        // Update KPIs
+        const posPct = total > 0 ? ((summary.positive / total) * 100).toFixed(1) : 0;
+        const negPct = total > 0 ? ((summary.negative / total) * 100).toFixed(1) : 0;
+        const neuPct = total > 0 ? ((summary.neutral / total) * 100).toFixed(1) : 0;
+
+        document.getElementById("kpiTotalFetched").innerText = total;
+        document.getElementById("kpiPositive").innerHTML = `${summary.positive} <span class="fs-6 fw-normal text-muted">(${posPct}%)</span>`;
+        document.getElementById("kpiNegative").innerHTML = `${summary.negative} <span class="fs-6 fw-normal text-muted">(${negPct}%)</span>`;
+        document.getElementById("kpiNeutral").innerHTML = `${summary.neutral} <span class="fs-6 fw-normal text-muted">(${neuPct}%)</span>`;
+
+        const statusBadge = document.getElementById("feedStatusBadge");
+        if (statusBadge) statusBadge.innerText = `Analyzed ${total} Posts`;
+
+        // Render Table Rows
+        const tbody = document.getElementById("livePostsTableBody");
+        if (tbody) {
+            tbody.innerHTML = "";
+            if (posts.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted">No posts retrieved.</td></tr>`;
+                return;
+            }
+
+            posts.forEach((p, idx) => {
+                let badgeClass = "badge-neu";
+                if (p.sentiment.toLowerCase() === "positive") badgeClass = "badge-pos";
+                if (p.sentiment.toLowerCase() === "negative") badgeClass = "badge-neg";
+
+                const linkHtml = p.url
+                    ? `<a href="${p.url}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary py-0 px-2" title="View Source"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>`
+                    : `-`;
+
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td class="text-muted">${idx + 1}</td>
+                    <td><div class="fw-medium" style="max-width: 480px;">${p.text}</div></td>
+                    <td><span class="badge bg-dark border border-secondary text-info">${p.source}</span></td>
+                    <td><span class="badge ${badgeClass} px-2 py-1">${p.sentiment}</span></td>
+                    <td class="fw-semibold">${(p.confidence * 100).toFixed(1)}%</td>
+                    <td class="text-muted small">${p.timestamp || "-"}</td>
+                    <td>${linkHtml}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Render Charts
+        renderLiveCharts(summary, posts);
+    }
+
+    function renderLiveCharts(summary, posts) {
+        const isLight = document.documentElement.getAttribute("data-theme") === "light";
+        const textColor = isLight ? "#1f2328" : "#f0f3f8";
+        const gridColor = isLight ? "#e1e4e8" : "#2e3646";
+        const borderColor = isLight ? "#ffffff" : "#21262d";
+
+        // 1. Donut Chart
+        const dCanvas = document.getElementById("liveDonutChart");
+        if (dCanvas) {
+            if (liveDonutChart) liveDonutChart.destroy();
+            liveDonutChart = new Chart(dCanvas.getContext("2d"), {
+                type: "doughnut",
+                data: {
+                    labels: ["Positive", "Negative", "Neutral"],
+                    datasets: [{
+                        data: [summary.positive || 0, summary.negative || 0, summary.neutral || 0],
+                        backgroundColor: ["#2ea043", "#f85149", "#58a6ff"],
+                        borderColor: borderColor,
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: "bottom", labels: { color: textColor, boxWidth: 12, padding: 12 } }
+                    },
+                    cutout: "65%"
+                }
+            });
+        }
+
+        // 2. Bar Chart Breakdown by Platform
+        const bCanvas = document.getElementById("liveSourceBarChart");
+        if (bCanvas) {
+            const platformCounts = {};
+            posts.forEach(p => {
+                let src = p.source || "Other";
+                if (src.includes("(")) {
+                    src = src.split("(")[0].trim();
+                }
+                const snt = p.sentiment.toLowerCase();
+                if (!platformCounts[src]) {
+                    platformCounts[src] = { positive: 0, negative: 0, neutral: 0 };
+                }
+                if (platformCounts[src][snt] !== undefined) {
+                    platformCounts[src][snt]++;
+                }
+            });
+
+            const platforms = Object.keys(platformCounts);
+            const posData = platforms.map(pl => platformCounts[pl].positive);
+            const negData = platforms.map(pl => platformCounts[pl].negative);
+            const neuData = platforms.map(pl => platformCounts[pl].neutral);
+
+            if (liveSourceBarChart) liveSourceBarChart.destroy();
+            liveSourceBarChart = new Chart(bCanvas.getContext("2d"), {
+                type: "bar",
+                data: {
+                    labels: platforms,
+                    datasets: [
+                        { label: "Positive", data: posData, backgroundColor: "#2ea043" },
+                        { label: "Negative", data: negData, backgroundColor: "#f85149" },
+                        { label: "Neutral", data: neuData, backgroundColor: "#58a6ff" }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { ticks: { color: textColor, stepSize: 1 }, grid: { color: gridColor }, stacked: true },
+                        x: { ticks: { color: textColor }, grid: { display: false }, stacked: true }
+                    },
+                    plugins: {
+                        legend: { position: "bottom", labels: { color: textColor, boxWidth: 12, padding: 12 } }
+                    }
+                }
+            });
+        }
+    }
+</script>
+{% endblock %}

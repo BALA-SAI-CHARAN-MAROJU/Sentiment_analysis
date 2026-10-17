@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}Bulk Analysis | Sentiment Analysis{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- Upload Form Card -->
+    <div class="col-12 col-lg-4">
+        <div class="card-custom h-100">
+            <div class="card-header-custom">
+                <i class="fa-solid fa-cloud-arrow-up me-2 text-info"></i>Bulk CSV Upload
+            </div>
+            <div class="card-body p-4">
+                <form action="{{ url_for('bulk_upload') }}" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="csvFileInput" class="form-label fw-semibold">Select CSV File:</label>
+                        <input class="form-control form-control-custom" type="file" id="csvFileInput" name="csv_file" accept=".csv" required>
+                        <div class="form-text text-muted small mt-2">
+                            The CSV should contain a column with social posts (e.g. <code>text</code>, <code>tweet</code>, <code>post</code>, <code>comment</code>, or <code>review</code>).
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="textColumnName" class="form-label fw-semibold">Text Column Name (Optional):</label>
+                        <input type="text" class="form-control form-control-custom" id="textColumnName" name="text_column" placeholder="Auto-detect if blank">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="maxRows" class="form-label fw-semibold">Max Rows to Process:</label>
+                        <select class="form-select form-control-custom" id="maxRows" name="max_rows">
+                            <option value="100">First 100 rows</option>
+                            <option value="500" selected>First 500 rows</option>
+                            <option value="1000">First 1,000 rows</option>
+                            <option value="0">All rows</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary-custom w-100 d-flex justify-content-center align-items-center gap-2">
+                        <i class="fa-solid fa-play"></i> Start Bulk Classification
+                    </button>
+                </form>
+
+                <hr class="border-secondary opacity-25 my-4">
+
+                <div class="text-muted small">
+                    <div class="fw-semibold text-main mb-1"><i class="fa-solid fa-lightbulb text-warning me-1"></i> Sample CSV Format:</div>
+                    <pre class="p-2 rounded mb-0" style="background-color: var(--code-bg); border: 1px solid var(--border-color); color: var(--text-main); font-size: 0.8rem;">id,text
+1,"Loving this update! 😍"
+2,"Terrible delay today 😡"
+3,"Meeting starts at 10 AM"</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Batch Analysis Output Table & Summary -->
+    <div class="col-12 col-lg-8">
+        <div class="card-custom h-100">
+            <div class="card-header-custom d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+                <span><i class="fa-solid fa-table me-2 text-info"></i>Batch Results Overview</span>
+                {% if results %}
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-dark border border-secondary text-muted">Processed: {{ results|length }} rows</span>
+                    <a href="{{ url_for('download_bulk_csv') }}" class="btn btn-sm btn-success">
+                        <i class="fa-solid fa-file-arrow-down me-1"></i> Download CSV
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="card-body p-4">
+                {% if results %}
+                    <!-- Batch Metrics Cards -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-4">
+                            <div class="p-3 rounded text-center" style="background-color: var(--bg-card-subtle); border: 1px solid var(--border-color);">
+                                <div class="text-muted small text-uppercase">Positive</div>
+                                <div class="fs-4 fw-bold text-success">{{ batch_stats.positive }} ({{ batch_stats.positive_pct }}%)</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-3 rounded text-center" style="background-color: var(--bg-card-subtle); border: 1px solid var(--border-color);">
+                                <div class="text-muted small text-uppercase">Negative</div>
+                                <div class="fs-4 fw-bold text-danger">{{ batch_stats.negative }} ({{ batch_stats.negative_pct }}%)</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-3 rounded text-center" style="background-color: var(--bg-card-subtle); border: 1px solid var(--border-color);">
+                                <div class="text-muted small text-uppercase">Neutral</div>
+                                <div class="fs-4 fw-bold text-info">{{ batch_stats.neutral }} ({{ batch_stats.neutral_pct }}%)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results Table -->
+                    <div class="table-responsive" style="max-height: 480px; overflow-y: auto;">
+                        <table class="table table-custom">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;">#</th>
+                                    <th>Original Text</th>
+                                    <th>Cleaned Text</th>
+                                    <th style="width: 110px;">Sentiment</th>
+                                    <th style="width: 100px;">Confidence</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for r in results %}
+                                <tr>
+                                    <td class="text-muted">{{ loop.index }}</td>
+                                    <td>
+                                        <div class="text-truncate fw-medium" style="max-width: 280px;" title="{{ r.original_text }}">
+                                            {{ r.original_text }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="text-dim small text-truncate" style="max-width: 220px;" title="{{ r.cleaned_text }}">
+                                            {{ r.cleaned_text }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if r.sentiment.lower() == 'positive' %}
+                                            <span class="badge badge-pos px-2 py-1">Positive</span>
+                                        {% elif r.sentiment.lower() == 'negative' %}
+                                            <span class="badge badge-neg px-2 py-1">Negative</span>
+                                        {% else %}
+                                            <span class="badge badge-neu px-2 py-1">Neutral</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="fw-semibold">{{ (r.confidence * 100)|round(1) }}%</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5 text-muted">
+                        <i class="fa-solid fa-file-csv fa-4x mb-3 text-secondary"></i>
+                        <h5>No CSV processed yet</h5>
+                        <p class="small">Upload a CSV file from the panel on the left to analyze posts in bulk.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

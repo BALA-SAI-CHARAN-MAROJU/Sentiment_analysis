@@ -1,0 +1,159 @@
+{
+    "best_model": "Linear SVM",
+    "models": {
+        "Logistic Regression": {
+            "accuracy": 0.6075,
+            "precision_macro": 0.6071,
+            "precision_weighted": 0.607,
+            "recall_macro": 0.6075,
+            "recall_weighted": 0.6075,
+            "f1_macro": 0.6073,
+            "f1_weighted": 0.6072,
+            "confusion_matrix": [
+                [
+                    439,
+                    142,
+                    85
+                ],
+                [
+                    166,
+                    351,
+                    150
+                ],
+                [
+                    76,
+                    166,
+                    425
+                ]
+            ],
+            "classes": [
+                "negative",
+                "neutral",
+                "positive"
+            ],
+            "per_class": {
+                "negative": {
+                    "precision": 0.6446,
+                    "recall": 0.6592,
+                    "f1_score": 0.6518,
+                    "support": 666
+                },
+                "neutral": {
+                    "precision": 0.5326,
+                    "recall": 0.5262,
+                    "f1_score": 0.5294,
+                    "support": 667
+                },
+                "positive": {
+                    "precision": 0.6439,
+                    "recall": 0.6372,
+                    "f1_score": 0.6405,
+                    "support": 667
+                }
+            }
+        },
+        "Multinomial Naive Bayes": {
+            "accuracy": 0.606,
+            "precision_macro": 0.6025,
+            "precision_weighted": 0.6025,
+            "recall_macro": 0.606,
+            "recall_weighted": 0.606,
+            "f1_macro": 0.6026,
+            "f1_weighted": 0.6025,
+            "confusion_matrix": [
+                [
+                    451,
+                    121,
+                    94
+                ],
+                [
+                    179,
+                    315,
+                    173
+                ],
+                [
+                    90,
+                    131,
+                    446
+                ]
+            ],
+            "classes": [
+                "negative",
+                "neutral",
+                "positive"
+            ],
+            "per_class": {
+                "negative": {
+                    "precision": 0.6264,
+                    "recall": 0.6772,
+                    "f1_score": 0.6508,
+                    "support": 666
+                },
+                "neutral": {
+                    "precision": 0.5556,
+                    "recall": 0.4723,
+                    "f1_score": 0.5105,
+                    "support": 667
+                },
+                "positive": {
+                    "precision": 0.6255,
+                    "recall": 0.6687,
+                    "f1_score": 0.6464,
+                    "support": 667
+                }
+            }
+        },
+        "Linear SVM": {
+            "accuracy": 0.6115,
+            "precision_macro": 0.6088,
+            "precision_weighted": 0.6087,
+            "recall_macro": 0.6115,
+            "recall_weighted": 0.6115,
+            "f1_macro": 0.6097,
+            "f1_weighted": 0.6096,
+            "confusion_matrix": [
+                [
+                    455,
+                    126,
+                    85
+                ],
+                [
+                    166,
+                    332,
+                    169
+                ],
+                [
+                    76,
+                    155,
+                    436
+                ]
+            ],
+            "classes": [
+                "negative",
+                "neutral",
+                "positive"
+            ],
+            "per_class": {
+                "negative": {
+                    "precision": 0.6528,
+                    "recall": 0.6832,
+                    "f1_score": 0.6676,
+                    "support": 666
+                },
+                "neutral": {
+                    "precision": 0.5416,
+                    "recall": 0.4978,
+                    "f1_score": 0.5188,
+                    "support": 667
+                },
+                "positive": {
+                    "precision": 0.6319,
+                    "recall": 0.6537,
+                    "f1_score": 0.6426,
+                    "support": 667
+                }
+            }
+        }
+    },
+    "generated_at": "2026-10-05 19:40:47"
+}

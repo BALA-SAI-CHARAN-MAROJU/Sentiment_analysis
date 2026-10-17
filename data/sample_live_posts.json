@@ -1,0 +1,142 @@
+[
+  {
+    "text": "The new battery optimization update for laptops has doubled my battery life! Highly impressed with the power efficiency. 😍🔋",
+    "source": "Reddit (r/technology)",
+    "timestamp": "2026-10-05 18:20:00",
+    "created_at": "2026-10-05 18:20:00",
+    "url": "https://reddit.com/r/technology/comments/sample1"
+  },
+  {
+    "text": "Worst experience with the new airlines app update. It crashed right when I was scanning my boarding pass! 😡✈️ #terrible",
+    "source": "Reddit (r/gaming)",
+    "timestamp": "2026-10-05 18:22:15",
+    "created_at": "2026-10-05 18:22:15",
+    "url": "https://reddit.com/r/gaming/comments/sample2"
+  },
+  {
+    "text": "This framework solved all our state synchronization issues across our web application. Absolutely phenomenal design! 🙌🚀",
+    "source": "Hacker News (Modern Web State)",
+    "timestamp": "2026-10-05 18:24:00",
+    "created_at": "2026-10-05 18:24:00",
+    "url": "https://news.ycombinator.com/item?id=101"
+  },
+  {
+    "text": "Another security breach due to hardcoded credentials in deployment scripts. When will engineering teams learn basic hygiene? 🤦‍♂️",
+    "source": "Hacker News (Cloud Security Breach)",
+    "timestamp": "2026-10-05 18:26:30",
+    "created_at": "2026-10-05 18:26:30",
+    "url": "https://news.ycombinator.com/item?id=102"
+  },
+  {
+    "text": "The new lightweight edge model performs inference in under 12 milliseconds on CPU! Great breakthrough for local AI. 💡",
+    "source": "Hacker News (Edge Model Benchmark)",
+    "timestamp": "2026-10-05 18:27:50",
+    "created_at": "2026-10-05 18:27:50",
+    "url": "https://news.ycombinator.com/item?id=103"
+  },
+  {
+    "text": "Quarterly semiconductor manufacturing index reports show a modest 0.4% increase in fabrication capacity ahead of consumer releases. 📊",
+    "source": "Mastodon (fosstodon.org)",
+    "timestamp": "2026-10-05 18:28:30",
+    "created_at": "2026-10-05 18:28:30",
+    "url": "https://fosstodon.org/@tech_observer/1"
+  },
+  {
+    "text": "Customer service kept me on hold for 55 minutes just to hang up abruptly without helping. Disgraceful support! 🤬👎",
+    "source": "Bluesky",
+    "timestamp": "2026-10-05 18:30:40",
+    "created_at": "2026-10-05 18:30:40",
+    "url": "https://bsky.app"
+  },
+  {
+    "text": "Just received the graduation certificate in the mail today! Hard work truly pays off! So grateful to all my mentors! 🎓🎉❤️",
+    "source": "Bluesky",
+    "timestamp": "2026-10-05 18:32:10",
+    "created_at": "2026-10-05 18:32:10",
+    "url": "https://bsky.app"
+  },
+  {
+    "text": "Looks great, thank you for fixing this regression in the parser! Clean and elegant solution. 👏",
+    "source": "GitHub (facebook/react)",
+    "timestamp": "2026-10-05 18:34:00",
+    "created_at": "2026-10-05 18:34:00",
+    "url": "https://github.com/facebook/react/issues/100"
+  },
+  {
+    "text": "This update completely broke backwards compatibility for third party plugins. App keeps throwing fatal errors! 💀❌",
+    "source": "GitHub (microsoft/vscode)",
+    "timestamp": "2026-10-05 18:36:12",
+    "created_at": "2026-10-05 18:36:12",
+    "url": "https://github.com/microsoft/vscode/issues/200"
+  },
+  {
+    "text": "Loving this artisanal coffee roast from the local farmers market. Truly heavenly notes of caramel and hazelnut! ☕✨",
+    "source": "Mastodon (mastodon.online)",
+    "timestamp": "2026-10-05 18:38:45",
+    "created_at": "2026-10-05 18:38:45",
+    "url": "https://mastodon.online/@coffee_daily/1"
+  },
+  {
+    "text": "The documentation for the v3 REST API endpoints has been published with full OpenAPI schema definitions.",
+    "source": "Reddit (r/programming)",
+    "timestamp": "2026-10-05 18:40:00",
+    "created_at": "2026-10-05 18:40:00",
+    "url": "https://reddit.com/r/programming/comments/sample6"
+  },
+  {
+    "text": "Another thrilling victory for our esports roster tonight! Flawless team coordination in the final round! 🏆🔥",
+    "source": "Reddit (r/gaming)",
+    "timestamp": "2026-10-05 18:42:30",
+    "created_at": "2026-10-05 18:42:30",
+    "url": "https://reddit.com/r/gaming/comments/sample7"
+  },
+  {
+    "text": "Package delivered to the completely wrong apartment block and courier company is refusing to investigate! 📦💔",
+    "source": "Bluesky",
+    "timestamp": "2026-10-05 18:45:10",
+    "created_at": "2026-10-05 18:45:10",
+    "url": "https://bsky.app"
+  },
+  {
+    "text": "A regular cloud database cluster backup and patch maintenance window is scheduled for Sunday 02:00 to 04:00 UTC.",
+    "source": "Mastodon (fosstodon.org)",
+    "timestamp": "2026-10-05 18:47:00",
+    "created_at": "2026-10-05 18:47:00",
+    "url": "https://fosstodon.org/@sysadmin/1"
+  },
+  {
+    "text": "This explanation of vector embeddings and cosine similarity is so remarkably clear and comprehensive! 🙌",
+    "source": "Hacker News (Understanding Vector Search)",
+    "timestamp": "2026-10-05 18:49:22",
+    "created_at": "2026-10-05 18:49:22",
+    "url": "https://news.ycombinator.com/item?id=104"
+  },
+  {
+    "text": "The pricing hike on this cloud tier is downright predatory. Cancelling all our team accounts immediately. 📉😡",
+    "source": "Hacker News (Cloud Tier Pricing)",
+    "timestamp": "2026-10-05 18:51:05",
+    "created_at": "2026-10-05 18:51:05",
+    "url": "https://news.ycombinator.com/item?id=105"
+  },
+  {
+    "text": "Researchers at the open lab released benchmark weights for lightweight edge vision transformers today. 🔬🤖",
+    "source": "GitHub (python/cpython)",
+    "timestamp": "2026-10-05 18:53:15",
+    "created_at": "2026-10-05 18:53:15",
+    "url": "https://github.com/python/cpython/issues/300"
+  },
+  {
+    "text": "Such an exquisite visual presentation and soundtrack in this indie title. Absolute masterpiece of storytelling! 🎮❤️",
+    "source": "Reddit (r/gaming)",
+    "timestamp": "2026-10-05 18:55:00",
+    "created_at": "2026-10-05 18:55:00",
+    "url": "https://reddit.com/r/gaming/comments/sample9"
+  },
+  {
+    "text": "The central bank held baseline interest rates steady at 4.25% following the conclusion of their monetary policy meeting.",
+    "source": "Mastodon (mastodon.online)",
+    "timestamp": "2026-10-05 18:57:30",
+    "created_at": "2026-10-05 18:57:30",
+    "url": "https://mastodon.online/@worldnews/1"
+  }
+]

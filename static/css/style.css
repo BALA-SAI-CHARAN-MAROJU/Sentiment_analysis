@@ -1,0 +1,398 @@
+/* ==========================================================================
+   Sentiment Analysis on Social Media Posts - Dual Theme (Dark & Light)
+   ========================================================================== */
+
+/* 1. Dark Theme Variables (Default) */
+:root, [data-theme="dark"] {
+  --bg-primary: #0d1117;
+  --bg-secondary: #161b22;
+  --bg-card: #21262d;
+  --bg-card-subtle: #1c2128;
+  --bg-hover: #30363d;
+  --border-color: #30363d;
+  --border-light: #484f58;
+
+  --text-main: #f0f6fc;
+  --text-muted: #8b949e;
+  --text-dim: #6e7681;
+  --text-heading: #ffffff;
+
+  --table-bg: #21262d;
+  --table-th-bg: #161b22;
+  --table-border: #30363d;
+  --table-hover: #282e37;
+  --table-text: #f0f6fc;
+
+  --badge-bg: #161b22;
+  --badge-border: #30363d;
+  --code-bg: #161b22;
+
+  --positive-color: #3fb950;
+  --positive-bg: rgba(46, 160, 67, 0.15);
+  --positive-border: rgba(46, 160, 67, 0.4);
+
+  --negative-color: #f85149;
+  --negative-bg: rgba(248, 81, 73, 0.15);
+  --negative-border: rgba(248, 81, 73, 0.4);
+
+  --neutral-color: #58a6ff;
+  --neutral-bg: rgba(88, 166, 255, 0.15);
+  --neutral-border: rgba(88, 166, 255, 0.4);
+
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* 2. Light Theme Variables */
+[data-theme="light"] {
+  --bg-primary: #f6f8fa;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-subtle: #f6f8fa;
+  --bg-hover: #eaeef2;
+  --border-color: #d0d7de;
+  --border-light: #e1e4e8;
+
+  --text-main: #1f2328;
+  --text-muted: #57606a;
+  --text-dim: #6e7781;
+  --text-heading: #0f1419;
+
+  --table-bg: #ffffff;
+  --table-th-bg: #f6f8fa;
+  --table-border: #d0d7de;
+  --table-hover: #f3f4f6;
+  --table-text: #1f2328;
+
+  --badge-bg: #eff2f5;
+  --badge-border: #d0d7de;
+  --code-bg: #f6f8fa;
+
+  --positive-color: #1a7f37;
+  --positive-bg: #dafbe1;
+  --positive-border: #4ac26b;
+
+  --negative-color: #cf222e;
+  --negative-bg: #ffebe9;
+  --negative-border: #ff8182;
+
+  --neutral-color: #0969da;
+  --neutral-bg: #ddf4ff;
+  --neutral-border: #54aeff;
+
+  --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* Base Body */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  font-family: var(--font-family);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Navbar */
+.navbar-custom {
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.85rem 1.5rem;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: -0.5px;
+  color: var(--text-main) !important;
+}
+
+.navbar-brand .brand-badge {
+  font-size: 0.72rem;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  color: var(--neutral-color);
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.nav-link {
+  color: var(--text-muted) !important;
+  font-weight: 500;
+  font-size: 0.92rem;
+  padding: 0.4rem 0.85rem !important;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover, .nav-link.active {
+  color: var(--text-main) !important;
+  background-color: var(--bg-hover);
+}
+
+/* Theme Toggle Button */
+.theme-toggle-btn {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  border-radius: 20px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+  background-color: var(--bg-hover);
+  border-color: var(--border-light);
+  color: var(--text-main);
+}
+
+/* Cards */
+.card-custom {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.25s ease;
+}
+
+.card-custom:hover {
+  border-color: var(--border-light);
+}
+
+.card-header-custom {
+  background: transparent;
+  border-bottom: 1px solid var(--border-color);
+  padding: 1rem 1.25rem;
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--text-heading);
+}
+
+/* KPI Metric Cards */
+.kpi-card {
+  padding: 1.25rem;
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi-title {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+}
+
+.kpi-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.kpi-subtitle {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  margin-top: 0.35rem;
+}
+
+/* Sentiment Badges */
+.badge-pos {
+  background-color: var(--positive-bg) !important;
+  color: var(--positive-color) !important;
+  border: 1px solid var(--positive-border) !important;
+}
+
+.badge-neg {
+  background-color: var(--negative-bg) !important;
+  color: var(--negative-color) !important;
+  border: 1px solid var(--negative-border) !important;
+}
+
+.badge-neu {
+  background-color: var(--neutral-bg) !important;
+  color: var(--neutral-color) !important;
+  border: 1px solid var(--neutral-border) !important;
+}
+
+/* Form Controls */
+.form-control-custom,
+.form-select.form-control-custom {
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-main) !important;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+}
+
+.form-control-custom::placeholder {
+  color: var(--text-dim);
+}
+
+.form-control-custom:focus,
+.form-select.form-control-custom:focus {
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--neutral-color) !important;
+  color: var(--text-main) !important;
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.2);
+}
+
+.form-control-custom option {
+  background-color: var(--bg-card) !important;
+  color: var(--text-main) !important;
+}
+
+/* Buttons */
+.btn-primary-custom {
+  background-color: #238636;
+  border: 1px solid #2ea043;
+  color: #ffffff !important;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 0.65rem 1.4rem;
+  transition: all 0.2s ease;
+}
+
+.btn-primary-custom:hover {
+  background-color: #2ea043;
+  color: #ffffff !important;
+}
+
+.btn-secondary-custom {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-main) !important;
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary-custom:hover {
+  background-color: var(--bg-hover);
+  border-color: var(--border-light);
+  color: var(--text-main) !important;
+}
+
+/* Tables - Complete Override for Zero Invisibility */
+.table, .table-custom {
+  color: var(--table-text) !important;
+  --bs-table-color: var(--table-text) !important;
+  --bs-table-bg: transparent !important;
+  --bs-table-border-color: var(--table-border) !important;
+  margin-bottom: 0;
+}
+
+.table td, .table th, .table-custom td, .table-custom th {
+  color: var(--table-text) !important;
+  background-color: transparent !important;
+  border-color: var(--table-border) !important;
+  padding: 0.85rem 1rem;
+  vertical-align: middle;
+}
+
+.table-custom th {
+  background-color: var(--table-th-bg) !important;
+  color: var(--text-muted) !important;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--table-border) !important;
+}
+
+.table tbody tr:hover td, .table-custom tbody tr:hover td {
+  background-color: var(--table-hover) !important;
+}
+
+.table-active, tr.table-active, tr.table-active td {
+  background-color: var(--bg-hover) !important;
+  color: var(--text-main) !important;
+}
+
+/* Badges and Subtle Boxes */
+.badge.bg-dark {
+  background-color: var(--badge-bg) !important;
+  color: var(--text-muted) !important;
+  border: 1px solid var(--badge-border) !important;
+}
+
+/* Fix Bootstrap Utility Color Classes in Light Mode */
+[data-theme="light"] .text-white,
+[data-theme="light"] .text-light {
+  color: var(--text-main) !important;
+}
+
+[data-theme="dark"] .text-white,
+[data-theme="dark"] .text-light {
+  color: #f0f6fc !important;
+}
+
+[data-theme="light"] .bg-secondary.bg-opacity-25 {
+  background-color: var(--bg-card-subtle) !important;
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="light"] .border-secondary {
+  border-color: var(--border-color) !important;
+}
+
+/* Word Pills */
+.word-pill {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background-color: var(--bg-hover);
+  border: 1px solid var(--border-light);
+  font-size: 0.82rem;
+  margin: 3px;
+  color: var(--text-main);
+}
+
+.word-pill span {
+  color: var(--neutral-color);
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+/* Social Media Post Cards in Stream */
+.social-post-card {
+  background-color: var(--bg-card-subtle) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-main);
+}
+
+.social-post-card p {
+  color: var(--text-main) !important;
+}
+
+/* Progress Bars */
+.progress {
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  transition: width 0.4s ease;
+}
+
+/* Footer */
+footer {
+  margin-top: auto;
+  background-color: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  padding: 1.25rem 0;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+}

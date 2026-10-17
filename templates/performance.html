@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+
+{% block title %}Model Performance | Sentiment Analysis{% endblock %}
+
+{% block content %}
+<!-- Top Header Card -->
+<div class="card-custom mb-4">
+    <div class="card-header-custom d-flex justify-content-between align-items-center">
+        <span><i class="fa-solid fa-trophy me-2 text-warning"></i>Active Selected Model</span>
+        <span class="badge bg-success px-3 py-1 fs-6">Best Performer: {{ metrics.best_model }}</span>
+    </div>
+    <div class="card-body p-4">
+        {% set best = metrics.models[metrics.best_model] %}
+        <div class="row g-3 text-center">
+            <div class="col-6 col-md-3">
+                <div class="p-3 rounded bg-secondary bg-opacity-25 border border-secondary border-opacity-25">
+                    <div class="text-muted small text-uppercase">Accuracy</div>
+                    <div class="fs-2 fw-bold text-main">{{ (best.accuracy * 100)|round(2) }}%</div>
+                    <div class="text-dim small">Overall Correctness</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-3 rounded bg-secondary bg-opacity-25 border border-secondary border-opacity-25">
+                    <div class="text-muted small text-uppercase">Precision (Weighted)</div>
+                    <div class="fs-2 fw-bold text-info">{{ (best.precision_weighted * 100)|round(2) }}%</div>
+                    <div class="text-dim small">True Positive Reliability</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-3 rounded bg-secondary bg-opacity-25 border border-secondary border-opacity-25">
+                    <div class="text-muted small text-uppercase">Recall (Weighted)</div>
+                    <div class="fs-2 fw-bold text-warning">{{ (best.recall_weighted * 100)|round(2) }}%</div>
+                    <div class="text-dim small">Sensitivity Across Classes</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-3 rounded bg-secondary bg-opacity-25 border border-secondary border-opacity-25">
+                    <div class="text-muted small text-uppercase">F1-Score (Weighted)</div>
+                    <div class="fs-2 fw-bold text-success">{{ (best.f1_weighted * 100)|round(2) }}%</div>
+                    <div class="text-dim small">Harmonic Mean Criterion</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Comparison Table & Comparison Chart -->
+<div class="row g-4 mb-4">
+    <!-- Model Comparison Table -->
+    <div class="col-12 col-lg-7">
+        <div class="card-custom h-100">
+            <div class="card-header-custom">
+                <i class="fa-solid fa-code-compare me-2 text-info"></i>Multi-Model Benchmark Comparison
+            </div>
+            <div class="card-body p-0 table-responsive">
+                <table class="table table-custom">
+                    <thead>
+                        <tr>
+                            <th>Model Architecture</th>
+                            <th>Accuracy</th>
+                            <th>Precision</th>
+                            <th>Recall</th>
+                            <th>F1-Score</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for name, m in metrics.models.items() %}
+                        <tr {% if name == metrics.best_model %}class="table-active"{% endif %}>
+                            <td class="fw-semibold">
+                                {{ name }}
+                                {% if name == metrics.best_model %}
+                                    <span class="badge bg-warning text-dark fw-bold ms-1"><i class="fa-solid fa-crown"></i> Best</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ (m.accuracy * 100)|round(2) }}%</td>
+                            <td>{{ (m.precision_weighted * 100)|round(2) }}%</td>
+                            <td>{{ (m.recall_weighted * 100)|round(2) }}%</td>
+                            <td class="fw-bold {% if name == metrics.best_model %}text-success{% endif %}">
+                                {{ (m.f1_weighted * 100)|round(2) }}%
+                            </td>
+                            <td>
+                                {% if name == metrics.best_model %}
+                                    <span class="badge badge-pos">Selected</span>
+                                {% else %}
+                                    <span class="badge bg-dark border border-secondary text-muted">Evaluated</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comparative Bar Chart -->
+    <div class="col-12 col-lg-5">
+        <div class="card-custom h-100">
+            <div class="card-header-custom">
+                <i class="fa-solid fa-chart-column me-2 text-info"></i>F1-Score Comparison
+            </div>
+            <div class="card-body p-4 d-flex justify-content-center align-items-center">
+                <div style="width: 100%; height: 260px;">
+                    <canvas id="modelComparisonChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confusion Matrix & Per-Class Breakdown -->
+<div class="row g-4 mb-4">
+    <!-- Confusion Matrix Display -->
+    <div class="col-12 col-lg-6">
+        <div class="card-custom h-100">
+            <div class="card-header-custom">
+                <i class="fa-solid fa-table-cells me-2 text-info"></i>Confusion Matrix ({{ metrics.best_model }})
+            </div>
+            <div class="card-body p-4">
+                <div class="table-responsive text-center">
+                    <table class="table table-custom table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Actual \ Predicted</th>
+                                <th class="text-danger fw-bold">Negative</th>
+                                <th class="text-info fw-bold">Neutral</th>
+                                <th class="text-success fw-bold">Positive</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% set cm = best.confusion_matrix %}
+                            <tr>
+                                <th class="text-danger fw-bold">Negative</th>
+                                <td class="bg-danger bg-opacity-25 fw-bold">{{ cm[0][0] }}</td>
+                                <td>{{ cm[0][1] }}</td>
+                                <td>{{ cm[0][2] }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-info fw-bold">Neutral</th>
+                                <td>{{ cm[1][0] }}</td>
+                                <td class="bg-info bg-opacity-25 fw-bold">{{ cm[1][1] }}</td>
+                                <td>{{ cm[1][2] }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-success fw-bold">Positive</th>
+                                <td>{{ cm[2][0] }}</td>
+                                <td>{{ cm[2][1] }}</td>
+                                <td class="bg-success bg-opacity-25 fw-bold">{{ cm[2][2] }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-dim small mt-2">
+                    <i class="fa-solid fa-info-circle me-1"></i> Diagonal highlighted cells denote correct classifications (True Positives, True Negatives).
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Per-Class Metrics -->
+    <div class="col-12 col-lg-6">
+        <div class="card-custom h-100">
+            <div class="card-header-custom">
+                <i class="fa-solid fa-list-check me-2 text-info"></i>Per-Class Detailed Evaluation
+            </div>
+            <div class="card-body p-0 table-responsive">
+                <table class="table table-custom">
+                    <thead>
+                        <tr>
+                            <th>Class Label</th>
+                            <th>Precision</th>
+                            <th>Recall</th>
+                            <th>F1-Score</th>
+                            <th>Test Support</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cls, pcm in best.per_class.items() %}
+                        <tr>
+                            <td class="fw-semibold text-capitalize">
+                                {% if cls == 'positive' %}
+                                    <span class="text-success"><i class="fa-solid fa-circle me-1"></i> Positive</span>
+                                {% elif cls == 'negative' %}
+                                    <span class="text-danger"><i class="fa-solid fa-circle me-1"></i> Negative</span>
+                                {% else %}
+                                    <span class="text-info"><i class="fa-solid fa-circle me-1"></i> Neutral</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ (pcm.precision * 100)|round(1) }}%</td>
+                            <td>{{ (pcm.recall * 100)|round(1) }}%</td>
+                            <td class="fw-bold">{{ (pcm.f1_score * 100)|round(1) }}%</td>
+                            <td class="text-muted">{{ pcm.support }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function renderModelChart() {
+        const mCtx = document.getElementById('modelComparisonChart');
+        if (!mCtx) return;
+        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        const textColor = isLight ? '#1f2328' : '#f0f3f8';
+        const gridColor = isLight ? '#e1e4e8' : '#2e3646';
+
+        if (window.perfChartInstance) {
+            window.perfChartInstance.destroy();
+        }
+
+        window.perfChartInstance = new Chart(mCtx.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: [{% for name in metrics.models.keys() %}'{{ name }}',{% endfor %}],
+                datasets: [{
+                    label: 'Weighted F1-Score (%)',
+                    data: [{% for m in metrics.models.values() %}{{ (m.f1_weighted * 100)|round(2) }},{% endfor %}],
+                    backgroundColor: ['#388bfd', '#8957e5', '#2ea043'],
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        min: 50,
+                        max: 75,
+                        ticks: { color: textColor, callback: v => v + '%' },
+                        grid: { color: gridColor }
+                    },
+                    x: {
+                        ticks: { color: textColor },
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", renderModelChart);
+    window.addEventListener("themeChanged", renderModelChart);
+</script>
+{% endblock %}

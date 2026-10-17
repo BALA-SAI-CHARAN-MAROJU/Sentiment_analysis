@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | Sentiment Analysis{% endblock %}
+
+{% block content %}
+<div class="row g-3 mb-4">
+    <div class="col-12 col-md-3">
+        <div class="card-custom kpi-card">
+            <div class="kpi-title"><i class="fa-solid fa-database me-1 text-primary"></i> Total Analyzed</div>
+            <div class="kpi-value">{{ history_stats.total }}</div>
+            <div class="kpi-subtitle">Logged in SQLite database</div>
+        </div>
+    </div>
+    <div class="col-12 col-md-3">
+        <div class="card-custom kpi-card">
+            <div class="kpi-title"><i class="fa-solid fa-face-smile me-1 text-success"></i> Positive Sentiment</div>
+            <div class="kpi-value text-success">{{ history_stats.positive }} <span class="fs-6 fw-normal text-muted">({{ history_stats.positive_pct }}%)</span></div>
+            <div class="kpi-subtitle">Favorable & optimistic posts</div>
+        </div>
+    </div>
+    <div class="col-12 col-md-3">
+        <div class="card-custom kpi-card">
+            <div class="kpi-title"><i class="fa-solid fa-face-frown me-1 text-danger"></i> Negative Sentiment</div>
+            <div class="kpi-value text-danger">{{ history_stats.negative }} <span class="fs-6 fw-normal text-muted">({{ history_stats.negative_pct }}%)</span></div>
+            <div class="kpi-subtitle">Critical & unhappy posts</div>
+        </div>
+    </div>
+    <div class="col-12 col-md-3">
+        <div class="card-custom kpi-card">
+            <div class="kpi-title"><i class="fa-solid fa-face-meh me-1 text-info"></i> Neutral Sentiment</div>
+            <div class="kpi-value text-info">{{ history_stats.neutral }} <span class="fs-6 fw-normal text-muted">({{ history_stats.neutral_pct }}%)</span></div>
+            <div class="kpi-subtitle">Informational / factual posts</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <!-- Visual Distribution Donut Chart -->
+    <div class="col-12 col-lg-5">
+        <div class="card-custom h-100">
+            <div class="card-header-custom">
+                <i class="fa-solid fa-chart-pie me-2 text-info"></i>Sentiment Distribution
+            </div>
+            <div class="card-body p-4 d-flex flex-column justify-content-center align-items-center">
+                {% if history_stats.total > 0 %}
+                    <div style="max-width: 320px; width: 100%; height: 280px; position: relative;">
+                        <canvas id="sentimentDonutChart"></canvas>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5 text-muted">
+                        <i class="fa-solid fa-inbox fa-3x mb-3 text-secondary"></i>
+                        <p>No predictions logged yet.<br>Analyze a post or upload a CSV to populate graphs!</p>
+                        <a href="{{ url_for('analyze_view') }}" class="btn btn-sm btn-primary-custom">Analyze First Post</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Model & System Status Overview -->
+    <div class="col-12 col-lg-7">
+        <div class="card-custom h-100">
+            <div class="card-header-custom d-flex justify-content-between align-items-center">
+                <span><i class="fa-solid fa-microchip me-2 text-info"></i>Model & System Status</span>
+                <span class="badge badge-pos"><i class="fa-solid fa-circle-check me-1"></i> System Online</span>
+            </div>
+            <div class="card-body p-4 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="d-flex justify-content-between align-items-center pb-2 mb-3 border-bottom" style="border-color: var(--border-color) !important;">
+                        <span class="text-muted"><i class="fa-solid fa-cube me-2 text-info"></i>Active Classifier</span>
+                        <span class="fw-semibold text-main">{{ metadata.best_model_name if metadata else 'Linear SVM' }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center pb-2 mb-3 border-bottom" style="border-color: var(--border-color) !important;">
+                        <span class="text-muted"><i class="fa-solid fa-bullseye me-2 text-success"></i>Test Accuracy</span>
+                        <span class="fw-bold text-success">{{ (metadata.metrics.accuracy * 100)|round(2) if metadata and metadata.metrics else '61.15' }}%</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center pb-2 mb-3 border-bottom" style="border-color: var(--border-color) !important;">
+                        <span class="text-muted"><i class="fa-solid fa-layer-group me-2 text-warning"></i>Weighted F1-Score</span>
+                        <span class="fw-bold text-warning">{{ (metadata.metrics.f1_score * 100)|round(2) if metadata and metadata.metrics else '60.96' }}%</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center pb-2 mb-3 border-bottom" style="border-color: var(--border-color) !important;">
+                        <span class="text-muted"><i class="fa-solid fa-database me-2 text-primary"></i>Database Storage</span>
+                        <span class="badge bg-dark border border-secondary text-info">SQLite (database/sentiment.db)</span>
+                    </div>
+                </div>
+                <div class="d-flex flex-wrap gap-2 pt-2">
+                    <a href="{{ url_for('analyze_view') }}" class="btn btn-sm btn-primary-custom flex-grow-1">
+                        <i class="fa-solid fa-magnifying-glass me-1"></i> Analyze Post
+                    </a>
+                    <a href="{{ url_for('bulk_view') }}" class="btn btn-sm btn-secondary-custom flex-grow-1">
+                        <i class="fa-solid fa-file-csv me-1"></i> Bulk CSV
+                    </a>
+                    <a href="{{ url_for('performance_view') }}" class="btn btn-sm btn-secondary-custom flex-grow-1">
+                        <i class="fa-solid fa-square-poll-vertical me-1"></i> Benchmarks
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- History & Search/Filter Section -->
+<div class="card-custom">
+    <div class="card-header-custom d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+        <span><i class="fa-solid fa-clock-rotate-left me-2 text-info"></i>Analysis History & Search</span>
+        <form class="d-flex flex-wrap gap-2" method="GET" action="{{ url_for('index') }}">
+            <input type="text" name="keyword" class="form-control form-control-sm form-control-custom" placeholder="Search text..." value="{{ request.args.get('keyword', '') }}" style="width: 180px;">
+            <select name="sentiment" class="form-select form-select-sm form-control-custom" style="width: 130px;">
+                <option value="all" {% if request.args.get('sentiment') == 'all' %}selected{% endif %}>All Sentiments</option>
+                <option value="positive" {% if request.args.get('sentiment') == 'positive' %}selected{% endif %}>Positive</option>
+                <option value="negative" {% if request.args.get('sentiment') == 'negative' %}selected{% endif %}>Negative</option>
+                <option value="neutral" {% if request.args.get('sentiment') == 'neutral' %}selected{% endif %}>Neutral</option>
+            </select>
+            <button type="submit" class="btn btn-sm btn-primary-custom"><i class="fa-solid fa-filter me-1"></i> Filter</button>
+            <a href="{{ url_for('index') }}" class="btn btn-sm btn-secondary-custom">Reset</a>
+        </form>
+    </div>
+    <div class="card-body p-0 table-responsive">
+        <table class="table table-custom">
+            <thead>
+                <tr>
+                    <th style="width: 60px;">#</th>
+                    <th>Post Text</th>
+                    <th style="width: 120px;">Sentiment</th>
+                    <th style="width: 110px;">Confidence</th>
+                    <th style="width: 140px;">Source</th>
+                    <th style="width: 160px;">Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if history %}
+                    {% for item in history %}
+                    <tr>
+                        <td class="text-muted">{{ item.id }}</td>
+                        <td>
+                            <div class="text-truncate fw-medium" style="max-width: 450px;" title="{{ item.original_text }}">
+                                {{ item.original_text }}
+                            </div>
+                            <div class="text-dim small text-truncate" style="max-width: 450px;">
+                                Cleaned: {{ item.cleaned_text or '-' }}
+                            </div>
+                        </td>
+                        <td>
+                            {% if item.sentiment.lower() == 'positive' %}
+                                <span class="badge badge-pos px-2 py-1"><i class="fa-solid fa-smile me-1"></i> Positive</span>
+                            {% elif item.sentiment.lower() == 'negative' %}
+                                <span class="badge badge-neg px-2 py-1"><i class="fa-solid fa-frown me-1"></i> Negative</span>
+                            {% else %}
+                                <span class="badge badge-neu px-2 py-1"><i class="fa-solid fa-meh me-1"></i> Neutral</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="fw-semibold">{{ (item.confidence * 100)|round(1) }}%</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-dark border border-secondary text-muted">{{ item.source }}</span>
+                        </td>
+                        <td class="text-muted small">{{ item.created_at }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">
+                            No prediction records found matching the criteria.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if history_stats.total > 0 %}
+<script>
+    function renderDonutChart() {
+        const dCtx = document.getElementById('sentimentDonutChart');
+        if (!dCtx) return;
+        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        const textColor = isLight ? '#1f2328' : '#f0f3f8';
+        const borderColor = isLight ? '#ffffff' : '#21262d';
+
+        if (window.donutChartInstance) {
+            window.donutChartInstance.destroy();
+        }
+
+        window.donutChartInstance = new Chart(dCtx.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Positive', 'Negative', 'Neutral'],
+                datasets: [{
+                    data: [
+                        {{ history_stats.positive }},
+                        {{ history_stats.negative }},
+                        {{ history_stats.neutral }}
+                    ],
+                    backgroundColor: ['#2ea043', '#f85149', '#58a6ff'],
+                    borderColor: borderColor,
+                    borderWidth: 3,
+                    hoverOffset: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: textColor, boxWidth: 14, padding: 14 }
+                    }
+                },
+                cutout: '70%'
+            }
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", renderDonutChart);
+    window.addEventListener("themeChanged", renderDonutChart);
+</script>
+{% endif %}
+{% endblock %}

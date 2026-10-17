@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}About Project | Sentiment Analysis{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 col-xl-10">
+
+        <!-- Project Hero Card -->
+        <div class="card-custom mb-4">
+            <div class="card-body p-4 p-md-5">
+                <span class="badge bg-primary bg-opacity-25 text-info border border-info border-opacity-25 px-3 py-1 mb-3">
+                    Final Year B.Tech Project &bull; Computer Science / AI & ML
+                </span>
+                <h1 class="display-6 fw-bold mb-3" style="color: var(--text-heading);">
+                    Sentiment Analysis on Social Media Posts
+                </h1>
+                <p class="lead text-muted mb-4">
+                    An intelligent, end-to-end Natural Language Processing system that automatically extracts, cleans, classifies, and evaluates the sentiment polarity (Positive, Negative, Neutral) of high-velocity social media texts and tweets using statistical machine learning architectures.
+                </p>
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="badge bg-dark border border-secondary p-2">Python 3.14</span>
+                    <span class="badge bg-dark border border-secondary p-2">Flask 3.x</span>
+                    <span class="badge bg-dark border border-secondary p-2">Scikit-Learn</span>
+                    <span class="badge bg-dark border border-secondary p-2">TF-IDF Vectorization</span>
+                    <span class="badge bg-dark border border-secondary p-2">SQLite3</span>
+                    <span class="badge bg-dark border border-secondary p-2">Bootstrap 5</span>
+                    <span class="badge bg-dark border border-secondary p-2">Chart.js</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem Statement & Objectives -->
+        <div class="row g-4 mb-4">
+            <div class="col-12 col-md-6">
+                <div class="card-custom h-100">
+                    <div class="card-header-custom">
+                        <i class="fa-solid fa-triangle-exclamation me-2 text-warning"></i>Problem Statement
+                    </div>
+                    <div class="card-body p-4" style="color: var(--text-main);">
+                        Social media channels generate millions of informal posts every second containing abbreviations, colloquialisms, emojis, hashtags, and noisy orthography.
+                        Organizations, brands, and researchers face immense challenges manually deciphering public feedback and brand sentiment.
+                        This project addresses this limitation by engineering an automated, resilient NLP pipeline capable of accurately discerning sentiment polarity into <strong>Positive</strong>, <strong>Negative</strong>, and <strong>Neutral</strong> classes with measurable statistical confidence.
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="card-custom h-100">
+                    <div class="card-header-custom">
+                        <i class="fa-solid fa-bullseye me-2 text-success"></i>Project Objectives
+                    </div>
+                    <div class="card-body p-4" style="color: var(--text-main);">
+                        <ul class="mb-0 ps-3">
+                            <li class="mb-2">Automate dataset acquisition without manual download overhead.</li>
+                            <li class="mb-2">Build a robust preprocessing engine preserving emotional context in emojis and hashtags.</li>
+                            <li class="mb-2">Train, benchmark, and compare multiple supervised classifiers (Logistic Regression, Naive Bayes, Linear SVM).</li>
+                            <li class="mb-2">Provide local explainability highlighting influential n-gram keywords per prediction.</li>
+                            <li>Deliver an intuitive dashboard featuring live text inference, bulk CSV classification, and persistent SQLite tracking.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Architecture & DFD -->
+        <div class="card-custom mb-4">
+            <div class="card-header-custom">
+                <i class="fa-solid fa-diagram-project me-2 text-info"></i>Academic Architecture & Data Flow Diagram (DFD)
+            </div>
+            <div class="card-body p-4">
+                <h6 class="fw-bold mb-2" style="color: var(--text-heading);">DFD Level 0: Context Level</h6>
+                <div class="p-3 rounded font-monospace mb-4" style="background-color: var(--code-bg); border: 1px solid var(--border-color); color: var(--text-main); font-size: 0.85rem; overflow-x: auto;">
+[User / Social Source] ──(Social Media Post)──> [0.0 Sentiment Analysis System] ──(Predicted Sentiment & Confidence)──> [User Dashboard]
+                </div>
+
+                <h6 class="fw-bold mb-2" style="color: var(--text-heading);">DFD Level 1: System Subsystems</h6>
+                <div class="p-3 rounded font-monospace mb-4" style="background-color: var(--code-bg); border: 1px solid var(--border-color); color: var(--text-main); font-size: 0.82rem; overflow-x: auto;">
+[Data Ingestion] ──(Raw Post)──> [1.0 Text Preprocessing] ──(Cleaned Text)──> [2.0 TF-IDF Feature Extraction]
+                                                                                      │
+                                                                                 (Sparse Matrix)
+                                                                                      ▼
+[Dashboard / API] <──(Results)── [4.0 SQLite History] <── [3.0 Model Inference & Calibration]
+                </div>
+
+                <h6 class="fw-bold mb-2" style="color: var(--text-heading);">DFD Level 2: Sentiment Classification & Explainability</h6>
+                <div class="p-3 rounded font-monospace" style="background-color: var(--code-bg); border: 1px solid var(--border-color); color: var(--text-main); font-size: 0.82rem; overflow-x: auto;">
+Clean Text ──> [Tokenize & N-Grams] ──> [Compute TF-IDF: tf * log(N / df)]
+                     │
+                     ▼
+          [Classifier Decision Function] ──> [Platt / Softmax Probability Calibration]
+                     │
+                     ├─> [Extract Top N-gram Weights (Explainability)]
+                     └─> [Predicted Class (Pos/Neg/Neu) + Confidence] ──> SQLite Record
+                </div>
+            </div>
+        </div>
+
+        <!-- Mathematical Formulations -->
+        <div class="card-custom mb-4">
+            <div class="card-header-custom">
+                <i class="fa-solid fa-square-root-variable me-2 text-warning"></i>Mathematical Foundations
+            </div>
+            <div class="card-body p-4">
+                <div class="row g-4">
+                    <div class="col-12 col-md-6">
+                        <div class="p-3 rounded" style="background-color: var(--bg-card-subtle); border: 1px solid var(--border-color);">
+                            <h6 class="text-info fw-bold mb-2">1. TF-IDF Formula</h6>
+                            <p class="small text-muted mb-1">Measures the statistical importance of a word \(t\) in a post \(d\) relative to corpus \(D\):</p>
+                            <code style="color: var(--text-main); font-weight: 600;">TF-IDF(t, d, D) = TF(t, d) &times; IDF(t, D)</code>
+                            <div class="small text-muted mt-2">
+                                <code>IDF(t, D) = ln((1 + |D|) / (1 + DF(t))) + 1</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="p-3 rounded" style="background-color: var(--bg-card-subtle); border: 1px solid var(--border-color);">
+                            <h6 class="text-info fw-bold mb-2">2. Multinomial Naive Bayes</h6>
+                            <p class="small text-muted mb-1">Applies Bayes' Theorem under conditional feature independence assumption:</p>
+                            <code style="color: var(--text-main); font-weight: 600;">P(c|d) &prop; P(c) &prod; P(t_i | c)</code>
+                            <div class="small text-muted mt-2">
+                                Laplace smoothing: <code>P(t|c) = (count(t, c) + &alpha;) / (&sum; count(w, c) + &alpha;&middot;|V|)</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="p-3 rounded" style="background-color: var(--bg-card-subtle); border: 1px solid var(--border-color);">
+                            <h6 class="text-info fw-bold mb-2">3. Linear SVM Margin</h6>
+                            <p class="small text-muted mb-1">Finds maximum-margin hyperplanes separating sentiment classes:</p>
+                            <code style="color: var(--text-main); font-weight: 600;">min_w 0.5 ||w||^2 + C &sum; max(0, 1 - y_i(w^T x_i + b))</code>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="p-3 rounded" style="background-color: var(--bg-card-subtle); border: 1px solid var(--border-color);">
+                            <h6 class="text-info fw-bold mb-2">4. F1-Score Criterion</h6>
+                            <p class="small text-muted mb-1">Harmonic mean balancing Precision and Recall across classes:</p>
+                            <code style="color: var(--text-main); font-weight: 600;">F1 = 2 &times; (Precision &times; Recall) / (Precision + Recall)</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Viva Voce Q&A Cheat Sheet -->
+        <div class="card-custom mb-4">
+            <div class="card-header-custom">
+                <i class="fa-solid fa-graduation-cap me-2 text-success"></i>Project Presentation / Viva Voce Q&A Cheat Sheet
+            </div>
+            <div class="card-body p-4">
+                <div class="mb-3">
+                    <div class="fw-bold mb-1" style="color: var(--text-heading);">Q1: Why did you not delete all emojis during text preprocessing?</div>
+                    <div style="color: var(--text-main);">A: In social media text, emojis carry vital emotional polarity. Blindly stripping emojis removes strong sentiment cues (e.g. 😍 or 😡). Our pipeline translates emojis into explicit descriptive sentiment tokens before tokenization.</div>
+                </div>
+                <div class="mb-3">
+                    <div class="fw-bold mb-1" style="color: var(--text-heading);">Q2: Why use TF-IDF rather than simple Bag of Words (CountVectorizer)?</div>
+                    <div style="color: var(--text-main);">A: Simple Bag of Words assigns disproportionate weight to frequently occurring words. TF-IDF down-weights universally common terms and rewards distinctive discriminative keywords that distinguish positive from negative posts.</div>
+                </div>
+                <div>
+                    <div class="fw-bold mb-1" style="color: var(--text-heading);">Q3: How was data leakage prevented during model training?</div>
+                    <div style="color: var(--text-main);">A: The dataset was split into training (80%) and testing (20%) sets using stratified sampling first. The TF-IDF vectorizer was fitted <strong>only</strong> on the training data (`fit_transform`) and subsequently used only to `transform` the test data.</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
