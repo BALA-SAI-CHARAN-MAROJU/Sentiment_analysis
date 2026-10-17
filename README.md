@@ -1,81 +1,141 @@
-# Sentiment Analysis on Social Media Posts
-### Final-Year B.Tech Major Project in Computer Science & Artificial Intelligence / Machine Learning
+# Sentify — Social Media Sentiment Analysis & Real-Time Intelligence Platform
 
-![Python](https://img.shields.io/badge/Python-3.14%20%7C%203.12%20%7C%203.10-blue.svg)
-![Flask](https://img.shields.io/badge/Flask-3.x-black.svg)
-![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-1.4+-orange.svg)
-![Status](https://img.shields.io/badge/Build-Passing-brightgreen.svg)
-![License](https://img.shields.io/badge/License-Academic%20Project-lightgrey.svg)
+[![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.12%20%7C%203.14-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-3.x-000000?logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
+[![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-1.4+-F7931E?logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
+[![Tests](https://img.shields.io/badge/Tests-25%20Passed-2ea44f?logo=pytest&logoColor=white)](#9-automated-testing--quality-assurance)
+[![Architecture](https://img.shields.io/badge/Architecture-Modular%20MVC-blueviolet)](#3-system-architecture--data-flow-diagrams)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+An end-to-end Machine Learning, Natural Language Processing, and Web Intelligence system engineered to ingest, clean, classify, explain, and visualize the sentiment polarity of user-generated social media posts across three canonical categories:
+
+$$\text{Class} \in \{\textbf{Positive}, \textbf{Neutral}, \textbf{Negative}\}$$
+
+Built as an academic and production-ready portfolio project featuring a social-aware NLP preprocessing pipeline, multi-model benchmark tournament, Platt-calibrated probability scoring, local token explainability, live social stream ingestion (Reddit, Mastodon, YouTube), bulk CSV batch processing, persistent SQLite analytics, and an interactive dark-themed web dashboard.
+
+---
+
+## Table of Contents
+
+1. [Project Overview](#1-project-overview)
+2. [Key System Features](#2-key-system-features)
+3. [System Architecture & Data Flow Diagrams](#3-system-architecture--data-flow-diagrams)
+4. [Project Directory Structure](#4-project-directory-structure)
+5. [Mathematical & Theoretical Formulations](#5-mathematical--theoretical-formulations)
+6. [Model Benchmark & Performance Comparison](#6-model-benchmark--performance-comparison)
+7. [Installation & Quickstart Guide](#7-installation--quickstart-guide)
+8. [Interactive Web Dashboard Walkthrough](#8-interactive-web-dashboard-walkthrough)
+9. [RESTful API Documentation](#9-restful-api-documentation)
+10. [Automated Testing & Quality Assurance](#10-automated-testing--quality-assurance)
+11. [Configuration & Optional API Integrations](#11-configuration--optional-api-integrations)
+12. [Academic Viva Voce & Defense Q&A](#12-academic-viva-voce--defense-qa)
+13. [Troubleshooting & FAQ](#13-troubleshooting--faq)
+14. [Contributing & Authors](#14-contributing--authors)
 
 ---
 
 ## 1. Project Overview
 
-**Sentiment Analysis on Social Media Posts** is an end-to-end Machine Learning and Natural Language Processing web application designed to automatically collect, clean, classify, and visualize the sentiment polarity of user-generated social media posts into three canonical classes:
+Social media content is notoriously noisy, dense with slang, acronyms, emojis, hashtags, and unpunctuated syntax. Traditional off-the-shelf sentiment analyzers fail on social micro-text because they discard punctuation, misinterpret negations, or strip emotional cues like emojis and repeated letters.
 
-- **Positive** (Optimistic, enthusiastic, supportive)
-- **Negative** (Critical, frustrated, unhappy)
-- **Neutral** (Factual, informative, objective)
-
-The system features automatic dataset acquisition, a social-aware NLP pipeline (preserving emojis, hashtags, and negations), multi-model benchmarking (**Logistic Regression**, **Multinomial Naive Bayes**, and **Linear Support Vector Machine** with probability calibration), local feature explainability, persistent SQLite history, bulk CSV prediction, and a modern dark/grey/white dashboard.
+**Sentify** resolves these challenges through a targeted social NLP pipeline combined with a multi-model benchmarking suite:
+- **Zero-Friction Startup**: Automatically downloads and prepares the `cardiffnlp/tweet_eval` social sentiment benchmark corpus or falls back to an offline social dataset if an internet connection is unavailable.
+- **Social-Aware Token Engineering**: Emojis are translated to emotive lexemes (`😍` $\rightarrow$ `love heart eyes`, `😡` $\rightarrow$ `angry`), negations are preserved, and handles/URLs are normalized.
+- **Calibrated Multi-Model Classification**: Evaluates Logistic Regression, Multinomial Naive Bayes, and Linear Support Vector Machines (LinearSVC) equipped with Platt scaling to yield calibrated posterior probabilities.
+- **Explainable AI (XAI)**: Surfaces the highest-weighted n-grams driving each prediction to give users transparent, interpretable decisions.
 
 ---
 
-## 2. Key Features
+## 2. Key System Features
 
-- **Automatic Dataset Acquisition**: Automatically checks for datasets upon launch; if absent, automatically pulls the CardiffNLP `tweet_eval` 3-class sentiment corpus (or triggers a built-in offline social corpus if no internet is available).
-- **Social NLP Preprocessing**:
-  - Translates high-impact emojis (e.g. `😍` -> `love`, `😡` -> `angry`, `🔥` -> `fire awesome`) instead of discarding them.
-  - Cleans user mentions (`@user`), URLs (`http://...`), HTML entities (`&amp;`), and normalizes repeated characters (`sooo good` -> `soo good`).
-  - Negation-aware stop-word filtering (never removes `not`, `no`, `never`, `cannot`, etc.).
-- **Multi-Model Benchmark**:
-  - Model 1: **TF-IDF + Logistic Regression**
-  - Model 2: **TF-IDF + Multinomial Naive Bayes**
-  - Model 3: **TF-IDF + Linear Support Vector Machine (LinearSVC with CalibratedClassifierCV)**
-  - Automated selection of the top performer based on **Weighted F1-Score**.
-- **Model Explainability**: Highlights the most influential tokens/n-grams that triggered the predicted sentiment.
-- **Modern Web Dashboard**:
-  - **Dashboard**: Real-time KPI counters, sentiment distribution donut chart, live social feed classifier.
-  - **Analyze Post**: Single-post prediction with preset buttons, confidence progress bar, and token pills.
-  - **Bulk CSV Analysis**: Upload any CSV file, auto-detect text columns, classify batch in parallel, and export annotated CSVs.
-  - **Dataset Analytics**: Post length distributions, high-frequency n-grams, and word clouds for each class.
-  - **Model Performance**: Multi-model comparison table, confusion matrix heatmap, per-class precision/recall/F1 metrics.
-  - **About Project**: Complete project architecture, Level 0-2 DFDs, mathematical formulas, and viva notes.
-- **RESTful API**: Standardized JSON endpoints for single (`/api/predict`) and batch (`/api/bulk-predict`) inference.
-- **SQLite Database**: Persistent queryable logging of prediction history with filtering by sentiment, keyword, and confidence.
+| Feature | Description |
+| :--- | :--- |
+| **Social NLP Preprocessing** | Cleans URLs, HTML entities, and user mentions (`@user`), expands emotional emojis, compresses elongated characters (`sooo good` $\rightarrow$ `soo good`), and preserves grammatical negations (`not`, `never`, `cannot`). |
+| **Automated Model Tournament** | Trains and cross-evaluates **Linear SVM**, **Logistic Regression**, and **Multinomial Naive Bayes** on identical TF-IDF feature matrices, saving the top-performing model ranked by **Weighted F1-Score**. |
+| **Platt Probability Calibration** | Wraps linear maximum-margin classifiers with `CalibratedClassifierCV` (sigmoid scaling) to provide true confidence scores rather than uncalibrated margin distances. |
+| **Local Token Explainability** | Ranks and displays the exact tokens and n-grams that steered the prediction toward Positive, Negative, or Neutral polarity. |
+| **Live Social Media Stream** | Ingests real-time public posts from Reddit, Mastodon, and YouTube with sentiment tags, confidence meters, and original post URLs. |
+| **Bulk CSV Batch Processing** | Drag-and-drop CSV dataset uploads with automated column detection, batch inference, dynamic table pagination, and one-click annotated CSV exports. |
+| **Exploratory Data Analytics (EDA)** | Dynamic sentiment distribution charts, character and word-count histograms, high-frequency n-grams, and pre-rendered word clouds for each sentiment class. |
+| **Persistent SQLite Audit Log** | Records every single and batch prediction in a local SQLite database with search, filter (by sentiment, confidence, keyword), and history management. |
+| **Comprehensive REST API** | Fully documented JSON endpoints for single inference, bulk classification, live social feeds, statistics, and prediction history. |
 
 ---
 
 ## 3. System Architecture & Data Flow Diagrams
 
-### Level 0: Context Data Flow Diagram
+### Level 0: Context Data Flow Diagram (DFD)
+
 ```
-┌────────────────────────┐      Raw Post Text       ┌─────────────────────────────────┐
-│                        │ ───────────────────────> │                                 │
-│  User / Social Source  │                          │ 0.0 Sentiment Analysis System   │
-│                        │ <─────────────────────── │                                 │
-└────────────────────────┘    Predicted Sentiment   └─────────────────────────────────┘
-                              & Confidence Score
+                     ┌────────────────────────────────┐
+                     │   User / Client / REST API     │
+                     └──────┬──────────────────▲──────┘
+                            │                  │
+                Raw Post /  │                  │ Predicted Sentiment,
+                CSV Batch   │                  │ Confidence & Explainability
+                            ▼                  │
+              ┌────────────────────────────────┴───────────────┐
+              │                                               │
+              │   0.0 Sentify Sentiment Intelligence Engine   │
+              │                                               │
+              └───────────────────────┬───────────────────────┘
+                                      │
+                         Read / Write │ Prediction Records
+                                      ▼
+                           [( SQLite Database )]
 ```
 
-### Level 1: System Subsystems
+### Level 1: Subsystem Data Flow Diagram
+
 ```
-[Data Ingestion] ──(Raw Post)──> [1.0 Preprocessing] ──(Cleaned Text)──> [2.0 TF-IDF Vectorizer]
-                                                                                │
-                                                                           (Sparse Matrix)
-                                                                                ▼
-[Dashboard / API] <──(Results)── [4.0 SQLite DB] <── [3.0 Model Inference & Calibration]
+[Raw Social Post / CSV]
+         │
+         ▼
+ ┌───────────────────────┐
+ │ 1.0 Preprocessing     │  --> Strips URLs, translates emojis, retains negations
+ └───────────┬───────────┘
+             │ Cleaned Text
+             ▼
+ ┌───────────────────────┐
+ │ 2.0 TF-IDF Vectorizer │  --> Sublinear TF, 1-2 N-Grams, Max 15,000 features
+ └───────────┬───────────┘
+             │ Sparse Feature Matrix
+             ▼
+ ┌───────────────────────┐
+ │ 3.0 Model Inference   │  --> Linear SVM + Platt Scaling (CalibratedClassifierCV)
+ └───────────┬───────────┘
+             │ Posterior Probabilities & Decision Values
+             ▼
+ ┌───────────────────────┐
+ │ 4.0 XAI Explainability│  --> Extracts top positive/negative/neutral token weights
+ └───────────┬───────────┘
+             │
+     ┌───────┴────────────────────────┐
+     ▼                                ▼
+┌───────────────────────┐ ┌───────────────────────┐
+│ 5.0 SQLite Store      │ │ 6.0 Web Dashboard &   │
+│     (database.db)     │ │     REST API JSON     │
+└───────────────────────┘ └───────────────────────┘
 ```
 
-### Level 2: Sentiment Classification & Explainability
+### Level 2: Sentiment Inference & Explainability Deep-Dive
+
 ```
-Clean Text ──> [Tokenize & N-Grams] ──> [Compute TF-IDF: tf * log(N / df)]
-                     │
-                     ▼
-          [Classifier Decision Function] ──> [Platt / Softmax Probability Calibration]
-                     │
-                     ├─> [Extract Top N-gram Weights (Explainability)]
-                     └─> [Predicted Class (Pos/Neg/Neu) + Confidence] ──> SQLite Record
+Clean Tokens ──► [N-Gram Matrix: (1, 2)] ──► [TF-IDF Feature Alignment]
+                                                    │
+                                                    ▼
+                                      [Linear SVM Decision Function]
+                                                    │
+                   ┌────────────────────────────────┴──────────────────────────────┐
+                   ▼                                                               ▼
+        [Sigmoid Platt Calibration]                                  [Feature Weight Multiplication]
+                   │                                                               │
+                   ▼                                                               ▼
+       [P(Neg), P(Neu), P(Pos)]                                    [Top Ranked Explanatory Tokens]
+                   │                                                               │
+                   └────────────────────────┬──────────────────────────────────────┘
+                                            ▼
+                           [Final Prediction Response Payload]
 ```
 
 ---
@@ -85,121 +145,188 @@ Clean Text ──> [Tokenize & N-Grams] ──> [Compute TF-IDF: tf * log(N / df
 ```
 c:/NNDL project/
 │
-├── app.py                      # Flask application & auto-initialization orchestrator
-├── config.py                   # Central paths, hyperparameters, and environment settings
-├── requirements.txt            # Python dependencies
-├── README.md                   # Comprehensive academic and practical documentation
-├── .gitignore                  # Git ignore rules
-├── .env.example                # Example environment variables
-├── .env                        # Active environment configuration
+├── app.py                      # Flask orchestrator, auto-initialization & API routes
+├── config.py                   # Central hyperparameters, file paths, and environment settings
+├── requirements.txt            # Pinned project dependencies
+├── README.md                   # Comprehensive project documentation
+├── .gitignore                  # Git ignore rules for virtual environments, caches, and DBs
+├── .env.example                # Template for optional external API credentials
+├── .env                        # Local environment configuration
 │
 ├── data/
-│   ├── raw/                    # Raw downloaded sentiment datasets
-│   ├── processed/              # Normalized 3-class dataset (sentiment_dataset.csv)
-│   ├── uploads/                # User uploaded CSV files
-│   └── sample_social_posts.csv # Sample CSV for demonstration
+│   ├── raw/
+│   │   └── raw_social_sentiment.csv  # Raw benchmark social corpus (CardiffNLP TweetEval)
+│   ├── processed/
+│   │   └── sentiment_dataset.csv     # Cleaned, standardized 3-class training dataset
+│   ├── uploads/                      # Temporary storage for user-uploaded CSV batches
+│   │   └── .gitkeep
+│   ├── sample_social_posts.csv       # Sample demo CSV for bulk analysis testing
+│   └── sample_live_posts.json        # Curated mock live stream for offline demonstrations
 │
 ├── models/
-│   ├── sentiment_model.pkl     # Best trained classifier (Linear SVM)
-│   ├── vectorizer.pkl          # Trained TF-IDF vectorizer
-│   ├── metadata.json           # Model configuration, vocabulary size, best metrics
-│   └── model_metrics.json      # Comparison metrics for all 3 models
+│   ├── sentiment_model.pkl     # Pre-trained production classifier (Linear SVM Calibrated)
+│   ├── vectorizer.pkl          # Trained TF-IDF feature extractor
+│   ├── metadata.json           # Model configuration, vocabulary size, and metrics
+│   ├── model_metrics.json      # Comparative benchmark results across all 3 models
+│   └── .gitkeep
 │
 ├── database/
-│   └── sentiment.db            # SQLite database with predictions history
+│   ├── sentiment.db            # Persistent SQLite database storing prediction logs
+│   └── .gitkeep
 │
 ├── src/
-│   ├── __init__.py
-│   ├── data_loader.py          # Automatic dataset checker, downloader, and normalizer
-│   ├── preprocessing.py        # Social NLP cleaner (emojis, handles, URLs, negations)
-│   ├── train.py                # Multi-model training, benchmark, and model selection
-│   ├── evaluate.py             # Accuracy, Precision, Recall, F1, Confusion Matrix
-│   ├── predict.py              # Single/batch inference and explainability engine
-│   ├── social_media_fetcher.py # Modular free/public API collector (Reddit, Mastodon)
-│   ├── database.py             # SQLite schema and query manager
-│   ├── analytics.py            # Corpus EDA aggregations and word clouds
+│   ├── __init__.py             # Module initializer
+│   ├── data_loader.py          # Automatic dataset fetcher, fallback builder, and validator
+│   ├── preprocessing.py        # Social NLP cleaner (emojis, mentions, URLs, negations)
+│   ├── train.py                # Multi-model benchmarking tournament & model selection
+│   ├── evaluate.py             # Accuracy, precision, recall, F1, and confusion matrix engine
+│   ├── predict.py              # Single and batch inference with token explainability
+│   ├── social_media_fetcher.py # Real-time API connectors (Reddit, Mastodon, YouTube)
+│   ├── database.py             # SQLite schema manager and transactional queries
+│   ├── analytics.py            # Corpus EDA statistics, n-gram tables, and word clouds
 │   └── utils.py                # Logging, file sanitization, and JSON helpers
 │
 ├── templates/
-│   ├── base.html               # Sleek dark/grey/white layout, navbar, and footer
-│   ├── index.html              # Interactive Dashboard with charts and live stream
-│   ├── analyze.html            # Real-time text analysis with confidence meter
-│   ├── bulk.html               # CSV upload, tabular output, and CSV export
-│   ├── analytics.html          # Deep corpus statistics and sentiment word clouds
-│   ├── performance.html        # Model benchmark table and confusion matrix
-│   └── about.html              # Academic presentation, DFDs, and viva cheat sheet
+│   ├── base.html               # Master layout, navigation, dark/light theme, and footer
+│   ├── index.html              # Main dashboard with KPI cards, charts, and live stream
+│   ├── analyze.html            # Real-time text analyzer with confidence meter and pills
+│   ├── bulk.html               # Drag-and-drop CSV batch processor and exporter
+│   ├── analytics.html          # Dataset analytics, distributions, and word clouds
+│   ├── performance.html        # Model benchmark table, metrics, and confusion matrix
+│   ├── live_feed.html          # Live multi-platform social media stream view
+│   └── about.html              # Academic presentation, DFDs, formulas, and viva notes
 │
 ├── static/
 │   ├── css/
-│   │   └── style.css           # Custom dark/grey/white responsive stylesheet
+│   │   └── style.css           # Modern dark-mode responsive stylesheet
 │   ├── js/
-│   │   └── main.js             # AJAX inference, Chart.js graphs, batch processing
-│   └── images/                 # Generated word cloud PNGs
+│   │   └── main.js             # AJAX requests, Chart.js visualizations, and batch UI
+│   └── images/
+│       ├── wordcloud_positive.png  # High-frequency positive n-gram word cloud
+│       ├── wordcloud_negative.png  # High-frequency negative n-gram word cloud
+│       └── wordcloud_neutral.png   # High-frequency neutral n-gram word cloud
 │
 ├── notebooks/
-│   └── eda.ipynb               # Jupyter Notebook for lab and viva demonstrations
+│   └── eda.ipynb               # Interactive Jupyter Notebook for exploratory data analysis
 │
 └── tests/
     ├── __init__.py
-    ├── test_preprocessing.py   # Unit tests for text cleaning and emojis
-    ├── test_prediction.py      # Unit tests for model inference
-    └── test_routes.py          # Integration tests for web and REST endpoints
+    ├── test_preprocessing.py   # Unit tests for text cleaning and emoji handling
+    ├── test_prediction.py      # Unit tests for model inference and probabilities
+    └── test_routes.py          # Integration tests for Flask web routes and REST APIs
 ```
 
 ---
 
-## 5. Mathematical Formulations
+## 5. Mathematical & Theoretical Formulations
 
-### 1. TF-IDF (Term Frequency - Inverse Document Frequency)
+### 1. Term Frequency - Inverse Document Frequency (TF-IDF)
+TF-IDF reflects how important a token $t$ is to a document $d$ within a corpus $D$:
+
 $$\text{TF-IDF}(t, d, D) = \text{TF}(t, d) \times \text{IDF}(t, D)$$
-$$\text{IDF}(t, D) = \ln\left(\frac{1 + |D|}{1 + \text{DF}(t)}\right) + 1$$
-- $\text{TF}(t, d)$: Number of times term $t$ appears in post $d$.
-- $|D|$: Total number of posts in the corpus.
-- $\text{DF}(t)$: Number of posts containing term $t$.
 
-### 2. Multinomial Naive Bayes
+Using sublinear term frequency scaling and smooth inverse document frequency:
+
+$$\text{TF}(t, d) = 1 + \ln(\text{count}(t, d)) \quad \text{for } \text{count}(t, d) > 0$$
+
+$$\text{IDF}(t, D) = \ln\left(\frac{1 + |D|}{1 + \text{DF}(t, D)}\right) + 1$$
+
+### 2. Multinomial Naive Bayes with Laplace Smoothing
+Under the conditional independence assumption:
+
 $$P(c \mid d) \propto P(c) \prod_{i=1}^{n} P(t_i \mid c)$$
-With Laplace smoothing ($\alpha = 0.5$):
-$$P(t \mid c) = \frac{\text{count}(t, c) + \alpha}{\sum_{w \in V} \text{count}(w, c) + \alpha |V|}$$
 
-### 3. Linear Support Vector Machine
-$$\min_{w, b} \frac{1}{2} \|w\|^2 + C \sum_{i=1}^{N} \max(0, 1 - y_i(w^T x_i + b))$$
-Calibrated using **Platt scaling** (cross-validated logistic regression on decision function outputs) to produce true posterior probability estimates.
+Laplace additive smoothing ($\alpha = 0.5$) prevents zero-probability penalties for unseen test vocabulary:
 
-### 4. Classification Metrics
-$$\text{Accuracy} = \frac{\text{TP} + \text{TN}}{\text{Total Samples}}$$
-$$\text{Precision} = \frac{\text{TP}}{\text{TP} + \text{FP}}, \quad \text{Recall} = \frac{\text{TP}}{\text{TP} + \text{FN}}$$
-$$\text{F1-Score} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}$$
+$$P(t_i \mid c) = \frac{\text{count}(t_i, c) + \alpha}{\sum_{t \in V} \text{count}(t, c) + \alpha |V|}$$
+
+### 3. Linear Support Vector Machine with Platt Calibration
+Linear SVM seeks the optimal maximum-margin hyperplane:
+
+$$\min_{w, b} \frac{1}{2} \|w\|^2 + C \sum_{i=1}^{N} \max\left(0, 1 - y_i(w^T x_i + b)\right)$$
+
+Because raw SVM margin distances $f(x) = w^T x + b$ do not represent probabilities, **Platt Scaling** fits a logistic sigmoid over cross-validated decision function scores:
+
+$$P(y = 1 \mid f(x)) = \frac{1}{1 + \exp(A \cdot f(x) + B)}$$
+
+The parameters $A$ and $B$ are estimated via maximum likelihood on internal validation folds.
+
+### 4. Evaluation Metrics
+For multi-class sentiment classification, metrics are weighted by class support:
+
+$$\text{Accuracy} = \frac{\sum_{c} \text{TP}_c}{N}$$
+
+$$\text{Precision}_c = \frac{\text{TP}_c}{\text{TP}_c + \text{FP}_c}, \quad \text{Recall}_c = \frac{\text{TP}_c}{\text{TP}_c + \text{FN}_c}$$
+
+$$\text{F1-Score}_c = 2 \times \frac{\text{Precision}_c \times \text{Recall}_c}{\text{Precision}_c + \text{Recall}_c}$$
+
+$$\text{Weighted F1} = \sum_{c} \left( \frac{N_c}{N} \times \text{F1-Score}_c \right)$$
 
 ---
 
-## 6. Installation & Quickstart (Windows / VS Code)
+## 6. Model Benchmark & Performance Comparison
+
+The benchmark tournament was evaluated using an 80/20 train-test split on the standardized social dataset with 15,000 maximum n-gram features:
+
+| Model Architecture | Accuracy | Precision (Weighted) | Recall (Weighted) | F1-Score (Weighted) | Selection Status |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Linear SVM (Calibrated)** | **61.15%** | **60.87%** | **61.15%** | **60.96%** | **Selected Production Model** |
+| Logistic Regression | 60.75% | 60.70% | 60.75% | 60.72% | Evaluated |
+| Multinomial Naive Bayes | 60.60% | 60.25% | 60.60% | 60.25% | Evaluated |
+
+> **Academic Insight**: On a noisy, three-class social media corpus (Twitter / X data with balanced neutral classes), ~61% balanced accuracy without multi-gigabyte deep neural networks represents strong statistical performance. Linear SVM with Platt calibration minimizes structural risk while producing calibrated posterior probabilities.
+
+---
+
+## 7. Installation & Quickstart Guide
 
 ### Prerequisites
-- Python 3.10+ (Tested and certified on Python 3.14)
-- Git (optional)
+- **Python**: Version 3.10, 3.12, or 3.14
+- **Operating System**: Windows, macOS, or Linux
+- **Git**: Installed and configured on your system
 
-### Step 1: Open Terminal in VS Code
-Open the project folder `c:\NNDL project` in VS Code (`Ctrl + ~` to open PowerShell terminal).
-
-### Step 2: Create and Activate Virtual Environment (Recommended)
-```powershell
-python -m venv venv
-.\venv\Scripts\Activate
+### Step 1: Clone the Repository
+```bash
+git clone https://github.com/BALA-SAI-CHARAN-MAROJU/Sentiment_analysis.git
+cd Sentiment_analysis
 ```
 
-### Step 3: Install Dependencies
+### Step 2: Create and Activate a Virtual Environment
+
+**On Windows (PowerShell):**
 ```powershell
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+```
+
+**On Windows (Command Prompt):**
+```cmd
+python -m venv venv
+.\venv\Scripts\activate.bat
+```
+
+**On macOS / Linux:**
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+### Step 3: Install Required Dependencies
+```bash
 pip install -r requirements.txt
 ```
 
-### Step 4: Run Application
-```powershell
+### Step 4: Run the Application
+```bash
 python app.py
 ```
 
-The system automatically initializes:
+### Automated Initialization Sequence
+Upon launch, the application automatically handles all setup steps without manual intervention:
 ```
+============================================================
+[INFO] Initializing Sentiment Analysis System...
+============================================================
 [INFO] Checking dataset...
 [INFO] Processed dataset found at data/processed/sentiment_dataset.csv.
 [INFO] Checking sentiment models...
@@ -208,180 +335,278 @@ The system automatically initializes:
 [INFO] Model loaded successfully.
 [INFO] Initializing SQLite database...
 [INFO] SQLite database initialized at database/sentiment.db
+[INFO] Generating initial word clouds for analytics dashboard...
 [INFO] System auto-initialization sequence complete.
-🚀 Sentiment Analysis Web Application Live at: http://127.0.0.1:5000
+[INFO] Web server ready to accept requests.
+============================================================
+ * Running on http://127.0.0.1:5000 (Press CTRL+C to quit)
 ```
 
-### Step 5: Open Browser
-Open your browser and navigate to:
+### Step 5: Open the Web Dashboard
+Navigate to your local browser at:
 **[http://127.0.0.1:5000](http://127.0.0.1:5000)**
 
 ---
 
-## 7. Model Training & Evaluation Commands
+## 8. Interactive Web Dashboard Walkthrough
 
-To manually re-train the models and generate comparison metrics:
+The web application is structured into seven purpose-built views:
 
-```powershell
-python -m src.train
-```
-
-### Benchmark Results (cardiffnlp/tweet_eval):
-| Model Architecture | Accuracy | Precision (Weighted) | Recall (Weighted) | F1-Score (Weighted) | Status |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Linear SVM (Calibrated)** | **61.15%** | **60.87%** | **61.15%** | **60.96%** | **Selected Best Model** |
-| Logistic Regression | 60.75% | 60.70% | 60.75% | 60.72% | Evaluated |
-| Multinomial Naive Bayes | 60.60% | 60.25% | 60.60% | 60.25% | Evaluated |
-
-*Note: For a noisy 3-class social Twitter dataset, ~61% balanced accuracy without heavy multi-gigabyte neural nets represents strong statistical performance.*
+1. **Executive Dashboard (`/`)**:
+   - High-level metric counters showing total predictions, sentiment breakdown, and model confidence.
+   - Interactive Chart.js donut chart reflecting real-time sentiment distribution.
+   - Live stream ticker previewing incoming social media posts.
+2. **Single Post Analyzer (`/analyze`)**:
+   - Interactive text input with one-click test sample presets.
+   - Real-time classification badge (`Positive`, `Negative`, `Neutral`).
+   - Confidence probability progress bars for each class.
+   - **XAI Token Pills**: Highlights the exact words and n-grams that influenced the prediction.
+3. **Bulk CSV Batch Processor (`/bulk`)**:
+   - Drag-and-drop CSV file upload.
+   - Auto-detects text columns (e.g., `text`, `tweet`, `post`, `content`).
+   - Real-time batch progress bar and interactive paginated results table.
+   - Downloadable enriched CSV containing original content plus predicted sentiment and confidence.
+4. **Dataset Analytics (`/analytics`)**:
+   - Class balance breakdown across the training corpus.
+   - Character length and token count distributions.
+   - High-frequency n-gram tables.
+   - High-resolution word clouds for Positive, Negative, and Neutral classes.
+5. **Model Performance (`/performance`)**:
+   - Multi-model comparison matrix (Accuracy, Precision, Recall, F1).
+   - Interactive Confusion Matrix heatmap.
+   - Per-class performance metrics.
+6. **Live Social Media Stream (`/live-feed`)**:
+   - Aggregated social posts from Reddit, Mastodon, YouTube, or curated streams.
+   - Filter by platform source and sentiment classification.
+7. **Academic Presentation & Viva Notes (`/about`)**:
+   - Interactive Level 0-2 Data Flow Diagrams.
+   - Mathematical equations with interactive explainers.
+   - Comprehensive viva voce preparation sheet.
 
 ---
 
-## 8. REST API Usage
+## 9. RESTful API Documentation
+
+Sentify exposes standardized JSON REST endpoints for external integrations.
 
 ### 1. Single Post Prediction
 - **Endpoint**: `POST /api/predict`
 - **Headers**: `Content-Type: application/json`
 - **Request Body**:
-  ```json
-  {
-    "text": "I absolutely love this new smartphone! The camera is stunning 😍✨ #tech #happy",
-    "source": "API Test"
-  }
-  ```
-- **Response**:
-  ```json
-  {
-    "text": "I absolutely love this new smartphone! The camera is stunning 😍✨ #tech #happy",
-    "cleaned_text": "absolutely love this new smartphone the camera is stunning love heart eyes sparkle brilliant happy",
-    "sentiment": "Positive",
-    "confidence": 0.8739,
-    "probabilities": {
-      "negative": 0.0826,
-      "neutral": 0.0435,
-      "positive": 0.8739
-    },
-    "explainability": {
-      "top_words": [
-        { "word": "love", "score": 0.4145 },
-        { "word": "camera", "score": 0.3946 },
-        { "word": "brilliant", "score": 0.3835 },
-        { "word": "absolutely", "score": 0.357 },
-        { "word": "eyes", "score": 0.357 }
-      ]
-    },
-    "model_used": "Linear SVM"
-  }
-  ```
+```json
+{
+  "text": "The battery life on this laptop is incredible! Super fast delivery 😍🔋 #tech #happy",
+  "source": "API Client"
+}
+```
 
-### 2. Bulk Prediction
-- **Endpoint**: `POST /api/bulk-predict`
-- **Request Body**:
-  ```json
-  {
-    "texts": [
-      "Loved this so much! 😍",
-      "Horrible delay and broken product 😡"
+- **Example cURL Command**:
+```bash
+curl -X POST http://127.0.0.1:5000/api/predict \
+  -H "Content-Type: application/json" \
+  -d '{"text": "The battery life on this laptop is incredible! Super fast delivery 😍🔋"}'
+```
+
+- **Response Payload**:
+```json
+{
+  "text": "The battery life on this laptop is incredible! Super fast delivery 😍🔋",
+  "cleaned_text": "the battery life on this laptop is incredible super fast delivery love heart eyes battery",
+  "sentiment": "Positive",
+  "confidence": 0.8842,
+  "probabilities": {
+    "negative": 0.0412,
+    "neutral": 0.0746,
+    "positive": 0.8842
+  },
+  "explainability": {
+    "top_words": [
+      { "word": "incredible", "score": 0.4412 },
+      { "word": "battery", "score": 0.3821 },
+      { "word": "love", "score": 0.3540 },
+      { "word": "super", "score": 0.3129 }
     ]
-  }
-  ```
+  },
+  "model_used": "Linear SVM"
+}
+```
 
-### 3. Real-Time Social Media Fetcher Endpoint
+---
+
+### 2. Bulk Batch Prediction
+- **Endpoint**: `POST /api/bulk-predict`
+- **Headers**: `Content-Type: application/json`
+- **Request Body**:
+```json
+{
+  "texts": [
+    "I absolutely love this new update! 😍",
+    "Terrible customer service and defective screen 😡",
+    "The package arrived on Tuesday as scheduled."
+  ]
+}
+```
+
+- **Response Payload**:
+```json
+{
+  "count": 3,
+  "summary": {
+    "positive": 1,
+    "negative": 1,
+    "neutral": 1
+  },
+  "results": [
+    {
+      "text": "I absolutely love this new update! 😍",
+      "sentiment": "Positive",
+      "confidence": 0.8912
+    },
+    {
+      "text": "Terrible customer service and defective screen 😡",
+      "sentiment": "Negative",
+      "confidence": 0.9324
+    },
+    {
+      "text": "The package arrived on Tuesday as scheduled.",
+      "sentiment": "Neutral",
+      "confidence": 0.8145
+    }
+  ]
+}
+```
+
+---
+
+### 3. Live Social Media Stream
 - **Endpoint**: `GET /api/fetch-live`
 - **Query Parameters**:
   - `source`: `reddit`, `mastodon`, `youtube`, or `all` (default: `all`)
-  - `limit`: Number of posts to retrieve (default: `10`)
-  - `subreddit`: Target subreddit for Reddit queries (e.g. `technology`, `programming`, `gaming`)
-  - `video_id`: Target video ID for YouTube queries (e.g. `dQw4w9WgXcQ`)
-- **Response**:
-  ```json
-  {
-    "source": "all",
-    "count": 10,
-    "summary": {
-      "positive": 5,
-      "negative": 2,
-      "neutral": 3
-    },
-    "posts": [
-      {
-        "text": "The new battery optimization update for laptops has doubled my battery life! 😍🔋",
-        "source": "Reddit (r/technology)",
-        "sentiment": "Positive",
-        "confidence": 0.8739,
-        "timestamp": "2026-10-05 18:20:00",
-        "url": "https://reddit.com/r/technology/comments/..."
-      }
-    ]
-  }
-  ```
-
-### 4. Statistics Endpoint
-- **Endpoint**: `GET /api/stats`
-- Returns total counts and positive/negative/neutral percentages.
+  - `limit`: Number of posts to return (default: `10`, max: `50`)
+  - `subreddit`: Target subreddit for Reddit queries (e.g. `technology`)
+  - `video_id`: YouTube video ID for comments (e.g. `dQw4w9WgXcQ`)
 
 ---
 
-## 9. Running Tests
+### 4. Database Statistics & Audit Logs
+- **Get Global Stats**: `GET /api/stats`
+- **Query Prediction History**: `GET /api/history?limit=50&sentiment=Positive&keyword=battery`
+- **Clear History**: `DELETE /api/history`
 
-Run the full automated test suite (24 unit and integration tests):
+---
 
-```powershell
-python -m pytest -v tests/
+## 10. Automated Testing & Quality Assurance
+
+The repository includes a comprehensive automated test suite with **25 unit and integration tests** built using `pytest`:
+
+```bash
+python -m pytest tests/ -v
 ```
 
-Test coverage includes:
-- Text normalization & emoji keyword translation
-- Negation word retention (`not`, `no`, `cannot`)
-- Model inference & probability bounds
-- Flask web routes (`/`, `/analyze`, `/bulk`, `/live-feed`, `/analytics`, `/performance`, `/about`)
-- REST APIs (`/api/predict`, `/api/fetch-live`, `/api/stats`, `/api/history`)
-- CSV bulk upload & parsing
+### Test Suite Structure:
+- **`tests/test_preprocessing.py`**:
+  - Emoji expansion into sentiment-carrying keywords.
+  - User mention (`@username`) and URL stripping.
+  - HTML entity decoding (`&amp;` $\rightarrow$ `&`).
+  - Negation word retention (`not`, `never`, `cannot`).
+  - Normalization of elongated words (`sooo` $\rightarrow$ `soo`).
+- **`tests/test_prediction.py`**:
+  - Model and vectorizer artifact loading verification.
+  - Sentiment classification output validity.
+  - Probability bounds verification ($0.0 \le P \le 1.0$ and $\sum P = 1.0$).
+  - Explainability token extraction and score sorting.
+  - Batch inference output length alignment.
+- **`tests/test_routes.py`**:
+  - HTTP 200 OK verification on all web views (`/`, `/analyze`, `/bulk`, `/analytics`, `/performance`, `/live-feed`, `/about`).
+  - REST endpoint contracts (`/api/predict`, `/api/bulk-predict`, `/api/stats`, `/api/fetch-live`, `/api/history`).
+  - CSV file upload, automated column detection, and error handling for empty files.
 
 ---
 
-## 10. Optional Social Media APIs (.env)
+## 11. Configuration & Optional API Integrations
 
-The application works completely out-of-the-box using free public endpoints. If you wish to connect your own credentials, configure the `.env` file:
+The system is configured via environment variables. Copy `.env.example` to `.env`:
 
+```bash
+cp .env.example .env
+```
+
+### Configuration Options:
 ```env
-# Optional Reddit API Credentials (PRAW)
-REDDIT_CLIENT_ID=your_client_id_here
-REDDIT_CLIENT_SECRET=your_client_secret_here
+# Flask Application Settings
+FLASK_ENV=development
+FLASK_DEBUG=1
+SECRET_KEY=sentiment_secret_key_btech_project_2026
+
+# Model & Training Settings
+MAX_TRAINING_ROWS=10000         # Set to 0 to train on all 45,000+ rows
+MODEL_TYPE=linear_svm           # Options: linear_svm, logistic_regression, naive_bayes
+USE_TRANSFORMER=false           # Set to true for optional HuggingFace RoBERTa model
+
+# Optional Reddit API (PRAW)
+REDDIT_CLIENT_ID=
+REDDIT_CLIENT_SECRET=
 REDDIT_USER_AGENT=SentimentAnalyzer/1.0
 
 # Optional YouTube Data API v3
-YOUTUBE_API_KEY=your_google_api_key_here
+YOUTUBE_API_KEY=
 
-# Mastodon Instance Configuration (Default: https://mastodon.social)
+# Mastodon Instance
 MASTODON_INSTANCE=https://mastodon.social
-MASTODON_ACCESS_TOKEN=your_token_here
+MASTODON_ACCESS_TOKEN=
 ```
 
-If left blank, the app uses public unauthenticated endpoints and seamless fallback social streams.
+> **Note**: External API credentials are completely optional. If left unconfigured, Sentify automatically uses public endpoints and curated social feeds for seamless demonstrations.
 
 ---
 
-## 11. Frequently Asked Questions / Common Errors
+## 12. Academic Viva Voce & Defense Q&A
 
-### Q1: Emojis cause a UnicodeEncodeError on Windows terminal.
-- **Fix**: The codebase includes `sys.stdout.reconfigure(encoding='utf-8')` across entrypoints. If running custom scripts, set `$env:PYTHONIOENCODING="utf-8"`.
+### Q1: Why is sentiment analysis on social media harder than on long-form reviews (e.g., IMDb)?
+**Answer**: Social media posts (tweets, Reddit comments) are short, informal, and context-sparse. They rely heavily on abbreviations, emojis, sarcasm, hashtags, and spelling variations. Review datasets typically consist of structured, multi-paragraph text with rich syntactic clues. Social NLP requires specialized preprocessing to preserve emotive tokens and handle negations without discarding context.
 
-### Q2: How do I train on the entire 45,000+ tweet dataset instead of 10,000 rows?
-- Change `MAX_TRAINING_ROWS=0` in `.env` and re-run `python -m src.train`.
+### Q2: Why choose Linear SVM over deep neural networks or Naive Bayes?
+**Answer**: In text classification with TF-IDF, the feature space is very high-dimensional (15,000+ n-grams) and sparse. In high-dimensional space, text data is predominantly linearly separable. Linear SVM finds the maximum-margin hyperplane, which minimizes structural risk rather than empirical training error. While Naive Bayes assumes conditional feature independence (which fails with phrases like "not good"), Linear SVM models feature interactions effectively without requiring GPUs or gigabytes of memory.
 
-### Q3: How do I test CSV upload during the project demonstration?
-- Go to `http://127.0.0.1:5000/bulk` and upload the prepared demo file: `data/sample_social_posts.csv`.
+### Q3: Why is probability calibration (Platt Scaling) necessary for SVMs?
+**Answer**: Standard SVMs output uncalibrated geometric margins $f(x) \in (-\infty, +\infty)$ representing the distance to the separating hyperplane, not posterior probabilities. Using Platt scaling (`CalibratedClassifierCV`), a logistic sigmoid is fitted to decision function values using out-of-fold cross-validation. This converts raw margins into true calibrated probabilities $P(y \mid x) \in [0, 1]$ required for confidence meters and threshold-based decision making.
+
+### Q4: How is data leakage prevented in this pipeline?
+**Answer**: Data leakage is prevented by strictly splitting the raw dataset into training and testing partitions **before** fitting the TF-IDF vectorizer. The vectorizer learns vocabulary frequencies solely from the training fold; unseen test tokens are mapped to zero without leaking corpus statistics into the model.
+
+### Q5: Why preserve negation words instead of using a standard stop-word list?
+**Answer**: Standard stop-word lists (such as NLTK's English stop words) discard words like `not`, `no`, `never`, `cannot`, and `neither`. In sentiment analysis, discarding negations reverses the polarity: `"The product is not good"` would be cleaned to `"product good"`, causing the model to incorrectly classify a negative review as positive. Our social preprocessing pipeline explicitly retains all negation operators.
 
 ---
 
-## 12. Viva Voce Presentation Guide
+## 13. Troubleshooting & FAQ
 
-1. **Why is Sentiment Analysis on Social Media harder than on formal reviews (e.g. IMDb)?**
-   - Social posts are short, unstructured, full of sarcasm, emojis, misspellings, and hashtags. Context is scarce, making feature extraction through n-grams and emoji mapping crucial.
-2. **Why Linear SVM with Platt Calibration?**
-   - In high-dimensional sparse text vectors (thousands of TF-IDF features), classes are often linearly separable. Linear SVM finds the maximum-margin hyperplane, minimizing structural risk. Platt scaling (calibrated classifier) transforms raw decision distances into reliable probabilities.
-3. **What is data leakage and how did you prevent it?**
-   - Data leakage happens when information from outside the training dataset is used to create the model. We split the data before fitting the TF-IDF vectorizer so the test set's vocabulary and frequencies remain completely unseen during training.
-#   S e n t i m e n t _ a n a l y s i s  
- 
+### Issue: `UnicodeEncodeError` when printing emojis on Windows
+- **Solution**: The codebase explicitly enforces UTF-8 encoding across entrypoints via `sys.stdout.reconfigure(encoding='utf-8')`. If using custom scripts, set the environment variable in PowerShell:
+  ```powershell
+  $env:PYTHONIOENCODING = "utf-8"
+  ```
+
+### Issue: Re-training models from scratch
+- **Solution**: To re-run the multi-model tournament and regenerate benchmark metrics:
+  ```powershell
+  python -m src.train
+  ```
+
+### Issue: How to test CSV batch upload during a viva demonstration
+- **Solution**: Navigate to `http://127.0.0.1:5000/bulk` and upload the prepared demo file: `data/sample_social_posts.csv`. The application will automatically detect the `text` column and display predictions.
+
+---
+
+## 14. Contributing & Authors
+
+### Project Author
+- **Bala Sai Charan Maroju**
+- **Repository**: [https://github.com/BALA-SAI-CHARAN-MAROJU/Sentiment_analysis.git](https://github.com/BALA-SAI-CHARAN-MAROJU/Sentiment_analysis.git)
+
+### Academic Discipline
+- **Department**: Computer Science & Artificial Intelligence / Machine Learning
+- **Subject**: Neural Networks & Deep Learning / NLP Capstone Project
+
+### License
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
